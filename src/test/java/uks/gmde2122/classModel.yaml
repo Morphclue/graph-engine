@@ -29,7 +29,7 @@
   declaration: 	"@Test
 public void graphSetup()"
   id: 	FirstGraphTest_graphSetup
-  methodBody: 	"      Graph graph = new Graph();
+  methodBody: 	"      JGraph jGraph = new JGraph();
 "
   modified: 	false
   modifiers: 	public

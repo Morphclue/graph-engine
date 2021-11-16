@@ -1,5 +1,5 @@
 package uks.gmde2122;
 
-public class Graph
+public class JGraph
 {
 }

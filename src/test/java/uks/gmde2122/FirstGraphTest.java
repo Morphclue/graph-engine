@@ -7,6 +7,6 @@ public class FirstGraphTest
    @Test
    public void graphSetup()
    {
-      Graph graph = new Graph();
+      JGraph jGraph = new JGraph();
    }
 }

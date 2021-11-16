@@ -1,5 +1,5 @@
 - c: 	org.fulib.classmodel.ClassModel
-  classes: 	graph
+  classes: 	jGraph
   defaultCollectionType: 	c1
   defaultPropertyStyle: 	Bean
   defaultRoleType: 	"java.util.ArrayList<%s>"
@@ -7,10 +7,10 @@
   packageName: 	uks.gmde2122
   packageSrcFolder: 	"src/main/java/uks/gmde2122"
 
-- graph: 	org.fulib.classmodel.Clazz
+- jGraph: 	org.fulib.classmodel.Clazz
   model: 	c
   modified: 	false
-  name: 	Graph
+  name: 	JGraph
   propertyStyle: 	Bean
 
 - c1: 	org.fulib.classmodel.CollectionType

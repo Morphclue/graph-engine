@@ -1,5 +1,5 @@
 # Graph Setup
 
-There is a Graph.
+There is a JGraph.
 
 

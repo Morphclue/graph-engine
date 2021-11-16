@@ -7,6 +7,10 @@ public class FirstGraphTest
    @Test
    public void graphSetup()
    {
-      JGraph jGraph = new JGraph();
+   }
+
+   @Test
+   public void seeGenModelJava()
+   {
    }
 }

@@ -1,5 +1,5 @@
 # Graph Setup
 
-There is a JGraph.
+# See GenModel.java
 
 

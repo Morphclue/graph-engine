@@ -10,7 +10,7 @@
 - firstGraphTest: 	org.fulib.classmodel.Clazz
   importList: 	org.junit.Test
   imports: 	org.junit.Test
-  methods: 	firstGraphTest_graphSetup
+  methods: 	firstGraphTest_graphSetup 	firstGraphTest_seeGenModelJava
   model: 	c
   modified: 	false
   name: 	FirstGraphTest
@@ -29,12 +29,25 @@
   declaration: 	"@Test
 public void graphSetup()"
   id: 	FirstGraphTest_graphSetup
-  methodBody: 	"      JGraph jGraph = new JGraph();
-"
+  methodBody: 	""
   modified: 	false
   modifiers: 	public
   name: 	graphSetup
   paramsString: 	""
   returnType: 	void
   signature: 	"class/FirstGraphTest/method/graphSetup()"
+
+- firstGraphTest_seeGenModelJava: 	org.fulib.classmodel.FMethod
+  annotations: 	"@Test"
+  clazz: 	firstGraphTest
+  declaration: 	"@Test
+public void seeGenModelJava()"
+  id: 	FirstGraphTest_seeGenModelJava
+  methodBody: 	""
+  modified: 	false
+  modifiers: 	public
+  name: 	seeGenModelJava
+  paramsString: 	""
+  returnType: 	void
+  signature: 	"class/FirstGraphTest/method/seeGenModelJava()"
 

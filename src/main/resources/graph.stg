@@ -1,0 +1,8 @@
+delimiters "$", "$"
+
+objectDiagram(title, objects, edges) ::= <<
+digraph "$title$" {
+    $objects$
+    $edges$
+}
+>>

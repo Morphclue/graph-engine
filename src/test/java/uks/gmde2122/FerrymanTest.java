@@ -24,5 +24,7 @@ public class FerrymanTest {
         startGraph.createEdge(boat, "moored", leftBank);
         startGraph.createEdge(wolf, "likes", goat);
         startGraph.createEdge(goat, "likes", cabbage);
+
+        startGraph.draw("start");
     }
 }

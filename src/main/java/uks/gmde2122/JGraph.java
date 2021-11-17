@@ -1,9 +1,15 @@
 package uks.gmde2122;
 
+import org.stringtemplate.v4.ST;
+import org.stringtemplate.v4.STGroup;
+import org.stringtemplate.v4.STGroupFile;
+
 import java.util.ArrayList;
 
 public class JGraph {
 
+    private static final STGroup TEMPLATE_GROUP = new STGroupFile(
+            ClassLoader.getSystemClassLoader().getResource("graph.stg"));
     private ArrayList<JNode> nodeList = new ArrayList<>();
     private ArrayList<Object> edgeList = new ArrayList<>();
 
@@ -33,5 +39,13 @@ public class JGraph {
             }
         }
         return false;
+    }
+
+    public void draw(String name) {
+        ST stringTemplate = TEMPLATE_GROUP.getInstanceOf("graph");
+        stringTemplate.add("title", name);
+        stringTemplate.add("objects", "");
+        stringTemplate.add("edges", "");
+        String dotString = stringTemplate.render();
     }
 }

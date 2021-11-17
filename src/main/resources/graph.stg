@@ -1,6 +1,6 @@
 delimiters "$", "$"
 
-objectDiagram(title, objects, edges) ::= <<
+graph(title, objects, edges) ::= <<
 digraph "$title$" {
     $objects$
     $edges$

@@ -27,7 +27,6 @@ public class JGraph {
             edgeList.add(source);
             edgeList.add(label);
             edgeList.add(target);
-
         }
         return this;
     }
@@ -48,7 +47,7 @@ public class JGraph {
         ST stringTemplate = TEMPLATE_GROUP.getInstanceOf("graph");
         stringTemplate.add("title", name);
         stringTemplate.add("objects", drawObjects());
-        stringTemplate.add("edges", "");
+        stringTemplate.add("edges", drawEdges());
         String dotString = stringTemplate.render();
 
         try {
@@ -58,7 +57,7 @@ public class JGraph {
         }
     }
 
-    public String drawObjects(){
+    public String drawObjects() {
         StringBuilder objects = new StringBuilder();
         for (JNode node : this.nodeList) {
             String label = (String) node.getAttributeValues("label");
@@ -73,5 +72,21 @@ public class JGraph {
             objects.append(objectST.render());
         }
         return objects.toString();
+    }
+
+    public String drawEdges() {
+        StringBuilder edges = new StringBuilder();
+        for (int i = 0; i < edgeList.size(); i += 3) {
+            JNode source = (JNode) edgeList.get(i);
+            String label = (String) edgeList.get(i + 1);
+            JNode target = (JNode) edgeList.get(i + 2);
+
+            ST edgeST = TEMPLATE_GROUP.getInstanceOf("edge");
+            edgeST.add("source", source.getId());
+            edgeST.add("label", label);
+            edgeST.add("target", target.getId());
+            edges.append(edgeST.render());
+        }
+        return edges.toString();
     }
 }

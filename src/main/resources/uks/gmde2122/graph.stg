@@ -7,7 +7,7 @@ digraph "$title$" {
 }
 >>
 
-object(objectId, label´, attributeList) ::= <<
+object(objectId, label, attributeList) ::= <<
 "$objectId$" [
     shape=plaintext
     fontsize="10"
@@ -25,5 +25,5 @@ edge(source, label, target) ::= <<
     arrowhead=none
     fontsize="10"
     headlabel="$label$"
-]
+];
 >>

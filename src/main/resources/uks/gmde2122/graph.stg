@@ -19,3 +19,11 @@ object(objectId, label´, attributeList) ::= <<
     >
 ];
 >>
+
+edge(source, label, target) ::= <<
+"$source$" -> "$target$" [
+    arrowhead=none
+    fontsize="10"
+    headlabel="$label$"
+]
+>>

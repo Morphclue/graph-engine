@@ -68,10 +68,22 @@ public class JGraph {
             ST objectST = TEMPLATE_GROUP.getInstanceOf("object");
             objectST.add("objectId", node.getId());
             objectST.add("label", label);
-            objectST.add("attributeList", new String[]{"attr1 = Hello", "attr2 = World"});
+            objectST.add("attributeList", drawAttributes(node));
             objects.append(objectST.render());
         }
         return objects.toString();
+    }
+
+    private ArrayList<String> drawAttributes(JNode node) {
+        ArrayList<String> attributeList = new ArrayList<>();
+        for (int i = 0; i < node.getAttributesList().size(); i += 2) {
+            attributeList.add(String.format(
+                    "%s = %s",
+                    node.getAttributesList().get(i),
+                    node.getAttributesList().get(i + 1))
+            );
+        }
+        return attributeList;
     }
 
     public String drawEdges() {

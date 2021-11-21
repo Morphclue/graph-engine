@@ -6,3 +6,16 @@ digraph "$title$" {
     $edges$
 }
 >>
+
+object(objectId, label´, attributeList) ::= <<
+"$objectId$" [
+    shape=plaintext
+    fontsize="10"
+    label=<
+      <table border='0' cellborder='1' cellspacing='0'>
+        <tr><td><u>$objectId$ :$label$</u></td></tr>
+        <tr><td>$attributeList:{attribute|$attribute; format="xml-encode"$<br align='left'/>}; separator=""$</td></tr>
+      </table>
+    >
+];
+>>

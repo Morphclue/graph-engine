@@ -66,8 +66,8 @@ public class JGraph {
             }
 
             ST objectST = TEMPLATE_GROUP.getInstanceOf("object");
-            objectST.add("objectId", "" + node.getId());
-            objectST.add("label", "" + label);
+            objectST.add("objectId", node.getId());
+            objectST.add("label", label);
             objectST.add("attributeList", new String[]{"attr1 = Hello", "attr2 = World"});
             objects.append(objectST.render());
         }

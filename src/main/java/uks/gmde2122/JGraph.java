@@ -45,6 +45,20 @@ public class JGraph {
     }
 
     public void draw(String name) {
+        ST stringTemplate = TEMPLATE_GROUP.getInstanceOf("graph");
+        stringTemplate.add("title", name);
+        stringTemplate.add("objects", drawObjects());
+        stringTemplate.add("edges", "");
+        String dotString = stringTemplate.render();
+
+        try {
+            Graphviz.fromString(dotString).render(Format.SVG).toFile(new File("tmp/" + name + ".svg"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String drawObjects(){
         StringBuilder objects = new StringBuilder();
         for (JNode node : this.nodeList) {
             String label = (String) node.getAttributeValues("label");
@@ -58,17 +72,6 @@ public class JGraph {
             objectST.add("attributeList", new String[]{"attr1 = Hello", "attr2 = World"});
             objects.append(objectST.render());
         }
-
-        ST stringTemplate = TEMPLATE_GROUP.getInstanceOf("graph");
-        stringTemplate.add("title", name);
-        stringTemplate.add("objects", objects);
-        stringTemplate.add("edges", "");
-        String dotString = stringTemplate.render();
-
-        try {
-            Graphviz.fromString(dotString).render(Format.SVG).toFile(new File("tmp/" + name + ".svg"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        return objects.toString();
     }
 }

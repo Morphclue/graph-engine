@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class JGraph {
 
     private static final STGroup TEMPLATE_GROUP = new STGroupFile(
-            ClassLoader.getSystemClassLoader().getResource("graph.stg"));
+            JGraph.class.getResource("graph.stg"));
     private ArrayList<JNode> nodeList = new ArrayList<>();
     private ArrayList<Object> edgeList = new ArrayList<>();
 

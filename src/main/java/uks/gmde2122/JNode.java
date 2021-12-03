@@ -50,4 +50,15 @@ public class JNode {
         }
         return -1;
     }
+
+    @Override
+    // no fulib
+    public String toString() {
+        String label = (String) getAttributeValues("label");
+        if(label == null){
+            label = "JNode";
+        }
+
+        return String.format("%d:%s", getId(), label);
+    }
 }

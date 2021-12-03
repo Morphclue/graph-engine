@@ -24,13 +24,20 @@ public class FerrymanTest {
         startGraph.createEdge(boat, "moored", leftBank);
         startGraph.createEdge(wolf, "likes", goat);
         startGraph.createEdge(goat, "likes", cabbage);
+        startGraph.createEdge(leftBank, "os", rightBank);
+        startGraph.createEdge(rightBank, "os", leftBank);
 
         startGraph.draw("start");
 
         MatchTable loadCargoMatches = new MatchTable().setGraph(startGraph).setStartNode(boat);
-        System.out.println(loadCargoMatches);
         loadCargoMatches.expandForward("start", "moored", "bank");
         loadCargoMatches.expandBackward("cargo", "at", "bank");
+        loadCargoMatches.expandAttribute("cargo", "label", "label");
         System.out.println(loadCargoMatches);
+
+        MatchTable rowBoatMatches = new MatchTable().setGraph(startGraph).setStartNode(boat);
+        rowBoatMatches.expandForward("start", "moored", "bank");
+        rowBoatMatches.expandForward("bank", "os", "other");
+        System.out.println(rowBoatMatches);
     }
 }

@@ -79,4 +79,26 @@ public class MatchTable {
         }
         table = resultTable;
     }
+
+    public void expandAttribute(String sourceColumnName, String attributeName, String targetColumnName) {
+        int sourceIndex = columnNames.indexOf(sourceColumnName);
+        columnNames.add(targetColumnName);
+
+        ArrayList<ArrayList<Object>> resultTable = new ArrayList<>();
+
+        for (ArrayList<Object> row : table) {
+            JNode source = (JNode) row.get(sourceIndex);
+            ArrayList<Object> attributeList = source.getAttributesList();
+            for (int i = 0; i < attributeList.size(); i += 2) {
+                if (attributeName.equals(attributeList.get(i))) {
+                    Object value = attributeList.get(i + 1);
+                    @SuppressWarnings("unchecked")
+                    ArrayList<Object> newRow = (ArrayList<Object>) row.clone();
+                    newRow.add(value);
+                    resultTable.add(newRow);
+                }
+            }
+        }
+        table = resultTable;
+    }
 }

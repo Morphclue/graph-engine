@@ -58,4 +58,25 @@ public class MatchTable {
         }
         table = resultTable;
     }
+
+    public void expandBackward(String sourceColumnName, String edgeLabel, String targetColumnName) {
+        int targetIndex = columnNames.indexOf(targetColumnName);
+        columnNames.add(sourceColumnName);
+
+        ArrayList<ArrayList<Object>> resultTable = new ArrayList<>();
+        ArrayList<Object> edgeList = graph.getEdgeList();
+        for (ArrayList<Object> row : table) {
+            JNode target = (JNode) row.get(targetIndex);
+            for (int i = 0; i < edgeList.size(); i += 3) {
+                if (target == edgeList.get(i + 2) && edgeLabel.equals(edgeList.get(i + 1))) {
+                    JNode newSource = (JNode) edgeList.get(i);
+                    @SuppressWarnings("unchecked")
+                    ArrayList<Object> newRow = (ArrayList<Object>) row.clone();
+                    newRow.add(newSource);
+                    resultTable.add(newRow);
+                }
+            }
+        }
+        table = resultTable;
+    }
 }

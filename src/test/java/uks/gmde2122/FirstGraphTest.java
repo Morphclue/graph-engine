@@ -5,10 +5,12 @@ import org.junit.Test;
 public class FirstGraphTest {
 
     @Test
-    public void graphSetup() {
-    }
+   public void graphSetup()
+   {
+   }
 
     @Test
-    public void seeGenModelJava() {
-    }
+   public void seeGenModelJava()
+   {
+   }
 }

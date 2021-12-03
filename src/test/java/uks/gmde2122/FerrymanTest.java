@@ -26,5 +26,10 @@ public class FerrymanTest {
         startGraph.createEdge(goat, "likes", cabbage);
 
         startGraph.draw("start");
+
+        MatchTable loadCargoMatches = new MatchTable().setGraph(startGraph).setStartNode(boat);
+        System.out.println(loadCargoMatches);
+        loadCargoMatches.expandForward("start", "moored", "bank");
+        System.out.println(loadCargoMatches);
     }
 }

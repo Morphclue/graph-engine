@@ -101,4 +101,8 @@ public class JGraph {
         }
         return edges.toString();
     }
+
+    public ArrayList<Object> getEdgeList() {
+        return edgeList;
+    }
 }

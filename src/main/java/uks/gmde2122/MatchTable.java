@@ -85,7 +85,6 @@ public class MatchTable {
         columnNames.add(targetColumnName);
 
         ArrayList<ArrayList<Object>> resultTable = new ArrayList<>();
-
         for (ArrayList<Object> row : table) {
             JNode source = (JNode) row.get(sourceIndex);
             ArrayList<Object> attributeList = source.getAttributesList();
@@ -96,6 +95,26 @@ public class MatchTable {
                     ArrayList<Object> newRow = (ArrayList<Object>) row.clone();
                     newRow.add(value);
                     resultTable.add(newRow);
+                }
+            }
+        }
+        table = resultTable;
+    }
+
+    public void filterEdge(String sourceColumnName, String edgeLabel, String targetColumnName) {
+        int sourceIndex = columnNames.indexOf(sourceColumnName);
+        int targetIndex = columnNames.indexOf(targetColumnName);
+
+        ArrayList<ArrayList<Object>> resultTable = new ArrayList<>();
+        ArrayList<Object> edgeList = graph.getEdgeList();
+        for (ArrayList<Object> row : table) {
+            JNode source = (JNode) row.get(sourceIndex);
+            JNode target = (JNode) row.get(targetIndex);
+            for (int i = 0; i < edgeList.size(); i += 3) {
+                if (source == edgeList.get(i)
+                        && edgeLabel.equals(edgeList.get(i + 1))
+                        && target == edgeList.get(i + 2)) {
+                    resultTable.add(row);
                 }
             }
         }

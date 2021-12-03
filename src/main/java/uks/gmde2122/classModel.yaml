@@ -1,11 +1,17 @@
 - c: 	org.fulib.classmodel.ClassModel
-  classes: 	jNode 	jGraph
+  classes: 	jRule 	jNode 	jGraph
   defaultCollectionType: 	c1
   defaultPropertyStyle: 	Bean
   defaultRoleType: 	"java.util.ArrayList<%s>"
   mainJavaDir: 	"src/main/java"
   packageName: 	uks.gmde2122
   packageSrcFolder: 	"src/main/java/uks/gmde2122"
+
+- jRule: 	org.fulib.classmodel.Clazz
+  model: 	c
+  modified: 	false
+  name: 	JRule
+  propertyStyle: 	Bean
 
 - jNode: 	org.fulib.classmodel.Clazz
   model: 	c

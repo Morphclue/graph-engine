@@ -14,6 +14,10 @@ public class GenModel implements ClassModelDecorator {
 
     }
 
+    class JRule {
+
+    }
+
     @Override
     public void decorate(ClassModelManager mm) {
         mm.haveNestedClasses(GenModel.class);

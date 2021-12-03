@@ -29,6 +29,8 @@ public class FerrymanTest {
 
         startGraph.draw("start");
 
+        JRule loadCargoRule = new JRule();
+
         MatchTable loadCargoMatches = new MatchTable().setGraph(startGraph).setStartNode(boat);
         loadCargoMatches.expandForward("start", "moored", "bank");
         loadCargoMatches.expandBackward("cargo", "at", "bank");

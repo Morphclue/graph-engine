@@ -41,9 +41,9 @@ public class MatchTable {
     public void expandForward(String sourceColumnName, String edgeLabel, String targetColumnName) {
         int sourceIndex = columnNames.indexOf(sourceColumnName);
         columnNames.add(targetColumnName);
-
         ArrayList<ArrayList<Object>> resultTable = new ArrayList<>();
         ArrayList<Object> edgeList = graph.getEdgeList();
+
         for (ArrayList<Object> row : table) {
             JNode source = (JNode) row.get(sourceIndex);
             for (int i = 0; i < edgeList.size(); i += 3) {
@@ -62,9 +62,9 @@ public class MatchTable {
     public void expandBackward(String sourceColumnName, String edgeLabel, String targetColumnName) {
         int targetIndex = columnNames.indexOf(targetColumnName);
         columnNames.add(sourceColumnName);
-
         ArrayList<ArrayList<Object>> resultTable = new ArrayList<>();
         ArrayList<Object> edgeList = graph.getEdgeList();
+
         for (ArrayList<Object> row : table) {
             JNode target = (JNode) row.get(targetIndex);
             for (int i = 0; i < edgeList.size(); i += 3) {
@@ -83,8 +83,8 @@ public class MatchTable {
     public void expandAttribute(String sourceColumnName, String attributeName, String targetColumnName) {
         int sourceIndex = columnNames.indexOf(sourceColumnName);
         columnNames.add(targetColumnName);
-
         ArrayList<ArrayList<Object>> resultTable = new ArrayList<>();
+
         for (ArrayList<Object> row : table) {
             JNode source = (JNode) row.get(sourceIndex);
             ArrayList<Object> attributeList = source.getAttributesList();
@@ -104,9 +104,9 @@ public class MatchTable {
     public void filterEdge(String sourceColumnName, String edgeLabel, String targetColumnName) {
         int sourceIndex = columnNames.indexOf(sourceColumnName);
         int targetIndex = columnNames.indexOf(targetColumnName);
-
         ArrayList<ArrayList<Object>> resultTable = new ArrayList<>();
         ArrayList<Object> edgeList = graph.getEdgeList();
+
         for (ArrayList<Object> row : table) {
             JNode source = (JNode) row.get(sourceIndex);
             JNode target = (JNode) row.get(targetIndex);
@@ -116,6 +116,20 @@ public class MatchTable {
                         && target == edgeList.get(i + 2)) {
                     resultTable.add(row);
                 }
+            }
+        }
+        table = resultTable;
+    }
+
+    public void filterAttribute(String sourceColumnName, Object filterValue) {
+        int sourceIndex = columnNames.indexOf(sourceColumnName);
+        ArrayList<ArrayList<Object>> resultTable = new ArrayList<>();
+
+        for (ArrayList<Object> row : table) {
+            Object value = row.get(sourceIndex);
+
+            if (value.equals(filterValue)) {
+                resultTable.add(row);
             }
         }
         table = resultTable;

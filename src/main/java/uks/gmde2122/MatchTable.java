@@ -136,4 +136,26 @@ public class MatchTable {
         }
         table = resultTable;
     }
+
+    public void crossProduct(MatchTable factor) {
+        columnNames.addAll(factor.getColumnNames());
+        ArrayList<ArrayList<Object>> resultTable = new ArrayList<>();
+        for (ArrayList<Object> firstRow : table) {
+            for (ArrayList<Object> secondRow : factor.getTable()) {
+                @SuppressWarnings("unchecked")
+                ArrayList<Object> newRow = (ArrayList<Object>) firstRow.clone();
+                newRow.addAll(secondRow);
+                resultTable.add(newRow);
+            }
+        }
+        table = resultTable;
+    }
+
+    public ArrayList<String> getColumnNames() {
+        return columnNames;
+    }
+
+    public ArrayList<ArrayList<Object>> getTable() {
+        return table;
+    }
 }

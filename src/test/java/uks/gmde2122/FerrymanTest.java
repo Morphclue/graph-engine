@@ -46,5 +46,13 @@ public class FerrymanTest {
         rowBoatMatches.expandForward("boat", "moored", "bank");
         rowBoatMatches.expandForward("bank", "os", "other");
         System.out.println(rowBoatMatches);
+
+        MatchTable factor1 = new MatchTable().setGraph(startGraph).setStartNodes("eater",
+                startGraph.getNodeList().toArray(new JNode[]{}));
+
+        MatchTable factor2 = new MatchTable().setGraph(startGraph).setStartNodes("food",
+                startGraph.getNodeList().toArray(new JNode[]{}));
+        factor1.crossProduct(factor2);
+        System.out.println(factor1);
     }
 }

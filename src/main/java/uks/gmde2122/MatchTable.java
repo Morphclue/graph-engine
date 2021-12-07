@@ -8,11 +8,13 @@ public class MatchTable {
     ArrayList<String> columnNames = new ArrayList<>();
     private JGraph graph;
 
-    public MatchTable setStartNode(JNode start) {
-        ArrayList<Object> row = new ArrayList<>();
-        row.add(start);
-        table.add(row);
-        columnNames.add("start");
+    public MatchTable setStartNodes(String columnName, JNode... start) {
+        columnNames.add(columnName);
+        for (JNode node : start) {
+            ArrayList<Object> row = new ArrayList<>();
+            row.add(node);
+            table.add(row);
+        }
         return this;
     }
 

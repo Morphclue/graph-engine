@@ -31,7 +31,8 @@ public class FerrymanTest {
 
         JRule loadCargoRule = new JRule();
 
-        MatchTable loadCargoMatches = new MatchTable().setGraph(startGraph).setStartNode(boat);
+        MatchTable loadCargoMatches = new MatchTable().setGraph(startGraph).setStartNodes("boat",
+                startGraph.getNodeList().toArray(new JNode[]{}));
         loadCargoMatches.expandForward("start", "moored", "bank");
         loadCargoMatches.expandBackward("cargo", "at", "bank");
         loadCargoMatches.expandForward("cargo", "likes", "food");
@@ -40,7 +41,8 @@ public class FerrymanTest {
         loadCargoMatches.filterAttribute("label", "goat");
         System.out.println(loadCargoMatches);
 
-        MatchTable rowBoatMatches = new MatchTable().setGraph(startGraph).setStartNode(boat);
+        MatchTable rowBoatMatches = new MatchTable().setGraph(startGraph).setStartNodes("boat",
+                startGraph.getNodeList().toArray(new JNode[]{}));
         rowBoatMatches.expandForward("start", "moored", "bank");
         rowBoatMatches.expandForward("bank", "os", "other");
         System.out.println(rowBoatMatches);

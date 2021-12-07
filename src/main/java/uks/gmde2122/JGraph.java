@@ -105,4 +105,8 @@ public class JGraph {
     public ArrayList<Object> getEdgeList() {
         return edgeList;
     }
+
+    public ArrayList<JNode> getNodeList() {
+        return nodeList;
+    }
 }

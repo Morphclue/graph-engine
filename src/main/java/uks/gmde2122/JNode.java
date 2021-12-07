@@ -6,7 +6,7 @@ public class JNode {
     private static int lastNodeNumber = 1;
     private int id = lastNodeNumber++;
 
-    private ArrayList<Object> attributesList;
+    private ArrayList<Object> attributesList = new ArrayList<>();
 
     public int getId() {
         return id;
@@ -26,9 +26,6 @@ public class JNode {
     }
 
     public JNode putAttribute(String attribute, Object value) {
-        if (attributesList == null) {
-            this.attributesList = new ArrayList<>();
-        }
         int i = getIndex(attribute);
         if (i >= 0) {
             this.attributesList.set(i + 1, value);
@@ -55,7 +52,7 @@ public class JNode {
     // no fulib
     public String toString() {
         String label = (String) getAttributeValues("label");
-        if(label == null){
+        if (label == null) {
             label = "JNode";
         }
 

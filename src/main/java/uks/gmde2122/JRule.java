@@ -1,5 +1,7 @@
 package uks.gmde2122;
 
+import java.util.ArrayList;
+
 public class JRule {
     private JGraph lhs;
 
@@ -13,21 +15,37 @@ public class JRule {
         JNode maxNode = chooseFirstNode();
         matchTable.setStartNodes(maxNode.toString(), graph.getNodeList().toArray(new JNode[]{}));
 
-        filterAttributes(matchTable, maxNode);
-        tryEdgeExpand(matchTable, maxNode);
+        ArrayList<JNode> todo = new ArrayList<>();
+        ArrayList<JNode> done = new ArrayList<>();
+        ArrayList<Integer> doneEdgeIndices = new ArrayList<>();
+        todo.add(maxNode);
+
+        while (!todo.isEmpty()) {
+            maxNode = todo.remove(0);
+
+            filterAttributes(matchTable, maxNode);
+            tryEdgeExpand(matchTable, maxNode, todo, doneEdgeIndices);
+        }
 
         return matchTable;
     }
 
-    private void tryEdgeExpand(MatchTable matchTable, JNode node) {
+    private void tryEdgeExpand(MatchTable matchTable, JNode node, ArrayList<JNode> todo, ArrayList<Integer> doneEdgeIndices) {
         for (int i = 0; i < lhs.getEdgeList().size(); i += 3) {
+            if (doneEdgeIndices.contains(i)) {
+                continue;
+            }
             JNode sourceNode = (JNode) lhs.getEdgeList().get(i);
             String label = (String) lhs.getEdgeList().get(i + 1);
             JNode targetNode = (JNode) lhs.getEdgeList().get(i + 2);
             if (sourceNode == node) {
                 matchTable.expandForward(sourceNode.toString(), label, targetNode.toString());
+                todo.add(targetNode);
+                doneEdgeIndices.add(i);
             } else if (targetNode == node) {
                 matchTable.expandBackward(sourceNode.toString(), label, targetNode.toString());
+                todo.add(sourceNode);
+                doneEdgeIndices.add(i);
             }
         }
     }

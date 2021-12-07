@@ -158,4 +158,19 @@ public class MatchTable {
     public ArrayList<ArrayList<Object>> getTable() {
         return table;
     }
+
+    public void filterIso(String column1, String column2) {
+        int firstColumnIndex = columnNames.indexOf(column1);
+        int secondColumnIndex = columnNames.indexOf(column2);
+        ArrayList<ArrayList<Object>> resultTable = new ArrayList<>();
+        for (ArrayList<Object> row : table) {
+            Object node1 = row.get(firstColumnIndex);
+            Object node2 = row.get(secondColumnIndex);
+
+            if (node1 != node2) {
+                resultTable.add(row);
+            }
+        }
+        table = resultTable;
+    }
 }

@@ -53,6 +53,7 @@ public class FerrymanTest {
         MatchTable factor2 = new MatchTable().setGraph(startGraph).setStartNodes("food",
                 startGraph.getNodeList().toArray(new JNode[]{}));
         factor1.crossProduct(factor2);
+        factor1.filterIso("eater", "food");
         System.out.println(factor1);
     }
 }

@@ -33,7 +33,7 @@ public class FerrymanTest {
 
         MatchTable loadCargoMatches = new MatchTable().setGraph(startGraph).setStartNodes("boat",
                 startGraph.getNodeList().toArray(new JNode[]{}));
-        loadCargoMatches.expandForward("start", "moored", "bank");
+        loadCargoMatches.expandForward("boat", "moored", "bank");
         loadCargoMatches.expandBackward("cargo", "at", "bank");
         loadCargoMatches.expandForward("cargo", "likes", "food");
         loadCargoMatches.filterEdge("food", "at", "bank");
@@ -43,7 +43,7 @@ public class FerrymanTest {
 
         MatchTable rowBoatMatches = new MatchTable().setGraph(startGraph).setStartNodes("boat",
                 startGraph.getNodeList().toArray(new JNode[]{}));
-        rowBoatMatches.expandForward("start", "moored", "bank");
+        rowBoatMatches.expandForward("boat", "moored", "bank");
         rowBoatMatches.expandForward("bank", "os", "other");
         System.out.println(rowBoatMatches);
     }

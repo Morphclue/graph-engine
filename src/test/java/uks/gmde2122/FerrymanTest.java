@@ -22,31 +22,36 @@ public class FerrymanTest {
 
         lhs.draw("loadCargoLhs");
 
-        MatchTable loadCargoMatches = new MatchTable().setGraph(startGraph).setStartNodes("boat",
-                startGraph.getNodeList().toArray(new JNode[]{}));
-        loadCargoMatches.expandForward("boat", "moored", "bank");
-        loadCargoMatches.expandBackward("cargo", "at", "bank");
-        loadCargoMatches.expandForward("cargo", "likes", "food");
-        loadCargoMatches.filterEdge("food", "at", "bank");
-        loadCargoMatches.expandAttribute("cargo", "label", "label");
-        loadCargoMatches.filterAttribute("label", "goat");
-        System.out.println(loadCargoMatches);
+        for (JRule rule : ruleList) {
 
-        MatchTable rowBoatMatches = new MatchTable().setGraph(startGraph).setStartNodes("boat",
-                startGraph.getNodeList().toArray(new JNode[]{}));
-        rowBoatMatches.expandForward("boat", "moored", "bank");
-        rowBoatMatches.expandForward("bank", "os", "other");
-        System.out.println(rowBoatMatches);
+            MatchTable ruleMatches = rule.findMatches(startGraph);
 
-        MatchTable factor1 = new MatchTable().setGraph(startGraph).setStartNodes("eater",
-                startGraph.getNodeList().toArray(new JNode[]{}));
+            MatchTable loadCargoMatches = new MatchTable().setGraph(startGraph).setStartNodes("boat",
+                    startGraph.getNodeList().toArray(new JNode[]{}));
+            loadCargoMatches.expandForward("boat", "moored", "bank");
+            loadCargoMatches.expandBackward("cargo", "at", "bank");
+            loadCargoMatches.expandForward("cargo", "likes", "food");
+            loadCargoMatches.filterEdge("food", "at", "bank");
+            loadCargoMatches.expandAttribute("cargo", "label", "label");
+            loadCargoMatches.filterAttribute("label", "goat");
+            System.out.println(loadCargoMatches);
 
-        MatchTable factor2 = new MatchTable().setGraph(startGraph).setStartNodes("food",
-                startGraph.getNodeList().toArray(new JNode[]{}));
-        factor1.crossProduct(factor2);
-        factor1.filterIso("eater", "food");
-        factor1.filterEdge("eater", "likes", "food");
-        System.out.println(factor1);
+            MatchTable rowBoatMatches = new MatchTable().setGraph(startGraph).setStartNodes("boat",
+                    startGraph.getNodeList().toArray(new JNode[]{}));
+            rowBoatMatches.expandForward("boat", "moored", "bank");
+            rowBoatMatches.expandForward("bank", "os", "other");
+            System.out.println(rowBoatMatches);
+
+            MatchTable factor1 = new MatchTable().setGraph(startGraph).setStartNodes("eater",
+                    startGraph.getNodeList().toArray(new JNode[]{}));
+
+            MatchTable factor2 = new MatchTable().setGraph(startGraph).setStartNodes("food",
+                    startGraph.getNodeList().toArray(new JNode[]{}));
+            factor1.crossProduct(factor2);
+            factor1.filterIso("eater", "food");
+            factor1.filterEdge("eater", "likes", "food");
+            System.out.println(factor1);
+        }
     }
 
     private JGraph generateStartGraph() {

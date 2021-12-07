@@ -23,8 +23,8 @@ public class FerrymanTest {
         lhs.draw("loadCargoLhs");
 
         for (JRule rule : ruleList) {
-
             MatchTable ruleMatches = rule.findMatches(startGraph);
+            System.out.println(ruleMatches);
 
             MatchTable loadCargoMatches = new MatchTable().setGraph(startGraph).setStartNodes("boat",
                     startGraph.getNodeList().toArray(new JNode[]{}));

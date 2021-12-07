@@ -5,31 +5,10 @@ import org.junit.Test;
 import java.util.ArrayList;
 
 public class FerrymanTest {
+
     @Test
     public void testFerrymanProblem() {
-        JGraph startGraph = new JGraph();
-
-        JNode wolf = startGraph.createNode().putAttribute("label", "wolf");
-        JNode goat = startGraph.createNode().putAttribute("label", "goat");
-        JNode cabbage = startGraph.createNode().putAttribute("label", "cabbage");
-        JNode boat = startGraph.createNode().putAttribute("label", "boat");
-        JNode leftBank = startGraph.createNode()
-                .putAttribute("label", "bank")
-                .putAttribute("side", "left");
-        JNode rightBank = startGraph.createNode()
-                .putAttribute("label", "bank")
-                .putAttribute("side", "right");
-
-        startGraph.createEdge(wolf, "at", leftBank);
-        startGraph.createEdge(goat, "at", leftBank);
-        startGraph.createEdge(cabbage, "at", leftBank);
-        startGraph.createEdge(boat, "moored", leftBank);
-        startGraph.createEdge(wolf, "likes", goat);
-        startGraph.createEdge(goat, "likes", cabbage);
-        startGraph.createEdge(leftBank, "os", rightBank);
-        startGraph.createEdge(rightBank, "os", leftBank);
-
-        startGraph.draw("start");
+        JGraph startGraph = generateStartGraph();
 
         ArrayList<JRule> ruleList = new ArrayList<>();
         JRule loadCargoRule = new JRule();
@@ -68,5 +47,32 @@ public class FerrymanTest {
         factor1.filterIso("eater", "food");
         factor1.filterEdge("eater", "likes", "food");
         System.out.println(factor1);
+    }
+
+    private JGraph generateStartGraph() {
+        JGraph startGraph = new JGraph();
+
+        JNode wolf = startGraph.createNode().putAttribute("label", "wolf");
+        JNode goat = startGraph.createNode().putAttribute("label", "goat");
+        JNode cabbage = startGraph.createNode().putAttribute("label", "cabbage");
+        JNode boat = startGraph.createNode().putAttribute("label", "boat");
+        JNode leftBank = startGraph.createNode()
+                .putAttribute("label", "bank")
+                .putAttribute("side", "left");
+        JNode rightBank = startGraph.createNode()
+                .putAttribute("label", "bank")
+                .putAttribute("side", "right");
+
+        startGraph.createEdge(wolf, "at", leftBank);
+        startGraph.createEdge(goat, "at", leftBank);
+        startGraph.createEdge(cabbage, "at", leftBank);
+        startGraph.createEdge(boat, "moored", leftBank);
+        startGraph.createEdge(wolf, "likes", goat);
+        startGraph.createEdge(goat, "likes", cabbage);
+        startGraph.createEdge(leftBank, "os", rightBank);
+        startGraph.createEdge(rightBank, "os", leftBank);
+
+        startGraph.draw("start");
+        return startGraph;
     }
 }

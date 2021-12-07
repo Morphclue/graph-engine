@@ -2,6 +2,8 @@ package uks.gmde2122;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 public class FerrymanTest {
     @Test
     public void testFerrymanProblem() {
@@ -29,7 +31,17 @@ public class FerrymanTest {
 
         startGraph.draw("start");
 
+        ArrayList<JRule> ruleList = new ArrayList<>();
         JRule loadCargoRule = new JRule();
+        JGraph lhs = loadCargoRule.createLhs();
+        JNode lhsBoat = lhs.createNode().putAttribute("label", "boat");
+        JNode lhsBank = lhs.createNode().putAttribute("label", "bank");
+        JNode lhsCargo = lhs.createNode();
+        lhs.createEdge(lhsBoat, "moored", lhsBank);
+        lhs.createEdge(lhsCargo, "at", lhsBank);
+        ruleList.add(loadCargoRule);
+
+        lhs.draw("loadCargoLhs");
 
         MatchTable loadCargoMatches = new MatchTable().setGraph(startGraph).setStartNodes("boat",
                 startGraph.getNodeList().toArray(new JNode[]{}));
@@ -54,6 +66,7 @@ public class FerrymanTest {
                 startGraph.getNodeList().toArray(new JNode[]{}));
         factor1.crossProduct(factor2);
         factor1.filterIso("eater", "food");
+        factor1.filterEdge("eater", "likes", "food");
         System.out.println(factor1);
     }
 }

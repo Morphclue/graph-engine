@@ -14,8 +14,22 @@ public class JRule {
         matchTable.setStartNodes(maxNode.toString(), graph.getNodeList().toArray(new JNode[]{}));
 
         filterAttributes(matchTable, maxNode);
+        tryEdgeExpand(matchTable, maxNode);
 
         return matchTable;
+    }
+
+    private void tryEdgeExpand(MatchTable matchTable, JNode node) {
+        for (int i = 0; i < lhs.getEdgeList().size(); i += 3) {
+            JNode sourceNode = (JNode) lhs.getEdgeList().get(i);
+            String label = (String) lhs.getEdgeList().get(i + 1);
+            JNode targetNode = (JNode) lhs.getEdgeList().get(i + 2);
+            if (sourceNode == node) {
+                matchTable.expandForward(sourceNode.toString(), label, targetNode.toString());
+            } else if (targetNode == node) {
+                matchTable.expandBackward(sourceNode.toString(), label, targetNode.toString());
+            }
+        }
     }
 
     private void filterAttributes(MatchTable matchTable, JNode node) {

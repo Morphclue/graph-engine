@@ -1,11 +1,17 @@
 - c: 	org.fulib.classmodel.ClassModel
-  classes: 	jRule 	jNode 	jGraph
+  classes: 	applyRuleParams 	jRule 	jNode 	jGraph
   defaultCollectionType: 	c1
   defaultPropertyStyle: 	Bean
   defaultRoleType: 	"java.util.ArrayList<%s>"
   mainJavaDir: 	"src/main/java"
   packageName: 	uks.gmde2122
   packageSrcFolder: 	"src/main/java/uks/gmde2122"
+
+- applyRuleParams: 	org.fulib.classmodel.Clazz
+  model: 	c
+  modified: 	false
+  name: 	ApplyRuleParams
+  propertyStyle: 	Bean
 
 - jRule: 	org.fulib.classmodel.Clazz
   model: 	c
@@ -18,12 +24,14 @@
   modified: 	false
   name: 	JNode
   propertyStyle: 	Bean
+  subClasses: 	jGraph
 
 - jGraph: 	org.fulib.classmodel.Clazz
   model: 	c
   modified: 	false
   name: 	JGraph
   propertyStyle: 	Bean
+  superClass: 	jNode
 
 - c1: 	org.fulib.classmodel.CollectionType
   implClass: 	class java.util.ArrayList

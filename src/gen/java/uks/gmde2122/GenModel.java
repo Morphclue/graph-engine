@@ -6,7 +6,7 @@ import org.fulib.builder.ClassModelManager;
 public class GenModel implements ClassModelDecorator {
 
 
-    class JGraph {
+    class JGraph extends JNode {
 
     }
 
@@ -15,6 +15,10 @@ public class GenModel implements ClassModelDecorator {
     }
 
     class JRule {
+
+    }
+
+    class ApplyRuleParams {
 
     }
 

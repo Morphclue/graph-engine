@@ -3,10 +3,10 @@ package uks.gmde2122;
 import java.util.ArrayList;
 
 public class MatchTable {
-
     ArrayList<ArrayList<Object>> table = new ArrayList<>();
     ArrayList<String> columnNames = new ArrayList<>();
     private JGraph graph;
+    private String ruleName;
 
     public MatchTable setStartNodes(String columnName, JNode... start) {
         columnNames.add(columnName);
@@ -26,6 +26,7 @@ public class MatchTable {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(ruleName).append("\n");
         stringBuilder.append("|\t").append(String.join("\t|\t", columnNames)).append("\t|\n");
 
         for (ArrayList<Object> row : table) {
@@ -51,7 +52,6 @@ public class MatchTable {
             for (int i = 0; i < edgeList.size(); i += 3) {
                 if (source == edgeList.get(i) && edgeLabel.equals(edgeList.get(i + 1))) {
                     JNode target = (JNode) edgeList.get(i + 2);
-                    @SuppressWarnings("unchecked")
                     ArrayList<Object> newRow = (ArrayList<Object>) row.clone();
                     newRow.add(target);
                     resultTable.add(newRow);
@@ -72,7 +72,6 @@ public class MatchTable {
             for (int i = 0; i < edgeList.size(); i += 3) {
                 if (target == edgeList.get(i + 2) && edgeLabel.equals(edgeList.get(i + 1))) {
                     JNode newSource = (JNode) edgeList.get(i);
-                    @SuppressWarnings("unchecked")
                     ArrayList<Object> newRow = (ArrayList<Object>) row.clone();
                     newRow.add(newSource);
                     resultTable.add(newRow);
@@ -93,7 +92,6 @@ public class MatchTable {
             for (int i = 0; i < attributeList.size(); i += 2) {
                 if (attributeName.equals(attributeList.get(i))) {
                     Object value = attributeList.get(i + 1);
-                    @SuppressWarnings("unchecked")
                     ArrayList<Object> newRow = (ArrayList<Object>) row.clone();
                     newRow.add(value);
                     resultTable.add(newRow);
@@ -142,7 +140,6 @@ public class MatchTable {
         ArrayList<ArrayList<Object>> resultTable = new ArrayList<>();
         for (ArrayList<Object> firstRow : table) {
             for (ArrayList<Object> secondRow : factor.getTable()) {
-                @SuppressWarnings("unchecked")
                 ArrayList<Object> newRow = (ArrayList<Object>) firstRow.clone();
                 newRow.addAll(secondRow);
                 resultTable.add(newRow);
@@ -172,5 +169,14 @@ public class MatchTable {
             }
         }
         table = resultTable;
+    }
+
+    public JGraph getGraph() {
+        return graph;
+    }
+
+    public MatchTable setRuleName(String ruleName) {
+        this.ruleName = ruleName;
+        return this;
     }
 }

@@ -4,8 +4,7 @@ import java.util.ArrayList;
 
 public class JNode {
     private static int lastNodeNumber = 1;
-    private int id = lastNodeNumber++;
-
+    private final int id = lastNodeNumber++;
     private ArrayList<Object> attributesList = new ArrayList<>();
 
     public int getId() {
@@ -14,6 +13,10 @@ public class JNode {
 
     public ArrayList<Object> getAttributesList() {
         return attributesList;
+    }
+
+    public void setAttributesList(ArrayList<Object> attributesList) {
+        this.attributesList = attributesList;
     }
 
     public Object getAttributeValues(String attributeName) {

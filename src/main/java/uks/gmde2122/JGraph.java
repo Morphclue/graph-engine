@@ -10,6 +10,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.TreeSet;
 
 public class JGraph extends JNode {
     private final ArrayList<JNode> nodeList = new ArrayList<>();
@@ -173,7 +175,67 @@ public class JGraph extends JNode {
     }
 
     public String computeCertificate() {
-        // correct here?
-        return "";
+        LinkedHashMap<JNode, String> nodeToCertificate = new LinkedHashMap<>();
+        for (JNode node : this.getNodeList()) {
+            String certificateZero = certificateZero(node);
+            nodeToCertificate.put(node, certificateZero);
+        }
+
+        TreeSet<String> certificateList = new TreeSet<>(nodeToCertificate.values());
+        LinkedHashMap<String, Integer> certificateToNumber = new LinkedHashMap<>();
+
+        while (true) {
+            int oldNumberOfCertificates = certificateList.size();
+            for (String certificate : certificateList) {
+                certificateToNumber.put(certificate, certificateToNumber.size() + 1);
+            }
+
+            LinkedHashMap<JNode, ArrayList<String>> nodeToLines = new LinkedHashMap<>();
+            for (JNode node : this.getNodeList()) {
+                nodeToLines.put(node, new ArrayList<>());
+            }
+
+            for (int i = 0; i < this.edgeList.size(); i += 3) {
+                JNode source = (JNode) this.getEdgeList().get(i);
+                String label = (String) this.getEdgeList().get(i + 1);
+                JNode target = (JNode) this.getEdgeList().get(i + 2);
+
+                Integer sourceNumber = certificateToNumber.get(nodeToCertificate.get(source));
+                Integer targetNumber = certificateToNumber.get(nodeToCertificate.get(target));
+                String sourceLine = String.format("  > %s %d\n", label, targetNumber);
+                ArrayList<String> sourceLines = nodeToLines.get(source);
+                sourceLines.add(sourceLine);
+
+                String targetLine = String.format("  < %s %d\n", label, sourceNumber);
+                ArrayList<String> targetLines = nodeToLines.get(target);
+                targetLines.add(targetLine);
+            }
+
+            certificateList.clear();
+            for (JNode node : this.getNodeList()) {
+                String oldCertificate = nodeToCertificate.get(node);
+                Integer oldNumber = certificateToNumber.get(oldCertificate);
+                ArrayList<String> lines = nodeToLines.get(node);
+                lines.sort(String::compareTo);
+                String newCertificate = "- " + oldNumber + "\n" + String.join("", lines);
+                nodeToCertificate.put(node, newCertificate);
+                certificateList.add(newCertificate);
+            }
+
+            if (oldNumberOfCertificates == certificateList.size()) {
+                break;
+            }
+        }
+
+        return String.join("", certificateList);
+    }
+
+    private String certificateZero(JNode node) {
+        ArrayList<String> lines = new ArrayList<>();
+        for (int i = 0; i < node.getAttributesList().size(); i += 2) {
+            lines.add(String.format("%s: %s", node.getAttributesList().get(i), node.getAttributesList().get(i + 1)));
+        }
+        lines.sort(String::compareTo);
+        return "- " + String.join("  \n", lines) + "\n";
     }
 }

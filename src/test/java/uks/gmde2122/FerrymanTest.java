@@ -3,7 +3,7 @@ package uks.gmde2122;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.TreeMap;
 
 public class FerrymanTest {
 
@@ -39,7 +39,7 @@ public class FerrymanTest {
 
         int nextGraphNumber = 1;
 
-        LinkedHashMap<String, JGraph> certificateMap = new LinkedHashMap<>();
+        TreeMap<String, JGraph> certificateMap = new TreeMap<>();
         String startCertificate = startGraph.computeCertificate();
         System.out.println("Start-Certificate = \n" + startCertificate);
         certificateMap.put(startCertificate, startGraph);

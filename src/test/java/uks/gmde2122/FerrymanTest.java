@@ -3,6 +3,7 @@ package uks.gmde2122;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 public class FerrymanTest {
 
@@ -37,6 +38,12 @@ public class FerrymanTest {
         lhs.draw("loadCargoLhs");
 
         int nextGraphNumber = 1;
+
+        LinkedHashMap<String, JGraph> certificateMap = new LinkedHashMap<>();
+        String startCertificate = startGraph.computeCertificate();
+        System.out.println("Start-Certificate = \n" + startCertificate);
+        certificateMap.put(startCertificate, startGraph);
+
         JGraph ltsGraph = new JGraph();
         ltsGraph.getNodeList().add(startGraph);
 

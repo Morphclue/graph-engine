@@ -171,4 +171,9 @@ public class JGraph extends JNode {
 
         return cloneGraph;
     }
+
+    public String computeCertificate() {
+        // correct here?
+        return "";
+    }
 }

@@ -11,6 +11,73 @@ public class FerrymanTest {
     public void testFerrymanProblem() {
         JGraph startGraph = generateStartGraph();
 
+        int nextGraphNumber = 1;
+
+        TreeMap<String, JGraph> certificateMap = new TreeMap<>();
+        String startCertificate = startGraph.computeCertificate();
+        System.out.println("Start-Certificate = \n" + startCertificate);
+        certificateMap.put(startCertificate, startGraph);
+
+        JGraph ltsGraph = new JGraph();
+        ltsGraph.getNodeList().add(startGraph);
+
+        ArrayList<JGraph> todo = new ArrayList<>();
+        todo.add(startGraph);
+        startGraph.putAttribute("label", fmpGraphLabel(startGraph));
+
+        while (!todo.isEmpty()) {
+            startGraph = todo.remove(0);
+
+            for (JRule rule : buildRules()) {
+                MatchTable ruleMatches = rule.findMatches(startGraph);
+
+                for (ArrayList<Object> row : ruleMatches.getTable()) {
+                    JGraph cloneGraph = (JGraph) startGraph.clone();
+                    cloneGraph.draw("cloneGraphBefore" + nextGraphNumber);
+
+                    ArrayList<Object> cloneRow = new ArrayList<>();
+                    for (Object origin : row) {
+                        if (origin instanceof JNode) {
+                            int originIndex = startGraph.getNodeList().indexOf(origin);
+                            JNode cloneNode = cloneGraph.getNodeList().get(originIndex);
+                            cloneRow.add(cloneNode);
+                        } else {
+                            cloneRow.add(origin);
+                        }
+                    }
+
+                    rule.apply(new ApplyRuleParams()
+                            .setHostGraph(cloneGraph)
+                            .setRule(rule)
+                            .setColumnNames(ruleMatches.getColumnNames())
+                            .setRow(cloneRow));
+                    cloneGraph.putAttribute("label", cloneGraph.toString());
+                    cloneGraph.draw("cloneGraph" + nextGraphNumber++);
+
+                    String newCertificate = cloneGraph.computeCertificate();
+                    JGraph oldGraph = certificateMap.get(newCertificate);
+                    if (oldGraph != null) {
+                        ltsGraph.createEdge(startGraph, rule.getName(), oldGraph);
+                    } else {
+                        todo.add(cloneGraph);
+                        certificateMap.put(newCertificate, cloneGraph);
+                        ltsGraph.getNodeList().add(cloneGraph);
+                        ltsGraph.createEdge(startGraph, rule.getName(), cloneGraph);
+                    }
+
+                    ltsGraph.getNodeList().add(cloneGraph);
+                    ltsGraph.createEdge(startGraph, rule.getName(), cloneGraph);
+
+                    todo.add(cloneGraph);
+                }
+            }
+        }
+
+        ltsGraph.draw("ltsGraph");
+        ltsGraph.draw("ltsGraphExplode", true);
+    }
+
+    private ArrayList<JRule> buildRules() {
         ArrayList<JRule> ruleList = new ArrayList<>();
 
         JGraph lhs;
@@ -60,70 +127,7 @@ public class FerrymanTest {
         ruleList.add(unloadRule);
         lhs.draw("loadCargoLhs");
 
-        int nextGraphNumber = 1;
-
-        TreeMap<String, JGraph> certificateMap = new TreeMap<>();
-        String startCertificate = startGraph.computeCertificate();
-        System.out.println("Start-Certificate = \n" + startCertificate);
-        certificateMap.put(startCertificate, startGraph);
-
-        JGraph ltsGraph = new JGraph();
-        ltsGraph.getNodeList().add(startGraph);
-
-        ArrayList<JGraph> todo = new ArrayList<>();
-        todo.add(startGraph);
-        startGraph.putAttribute("label", fmpGraphLabel(startGraph));
-
-        while (!todo.isEmpty()) {
-            startGraph = todo.remove(0);
-
-            for (JRule rule : ruleList) {
-                MatchTable ruleMatches = rule.findMatches(startGraph);
-
-                for (ArrayList<Object> row : ruleMatches.getTable()) {
-                    JGraph cloneGraph = (JGraph) startGraph.clone();
-                    cloneGraph.draw("cloneGraphBefore" + nextGraphNumber);
-
-                    ArrayList<Object> cloneRow = new ArrayList<>();
-                    for (Object origin : row) {
-                        if (origin instanceof JNode) {
-                            int originIndex = startGraph.getNodeList().indexOf(origin);
-                            JNode cloneNode = cloneGraph.getNodeList().get(originIndex);
-                            cloneRow.add(cloneNode);
-                        } else {
-                            cloneRow.add(origin);
-                        }
-                    }
-
-                    rule.apply(new ApplyRuleParams()
-                            .setHostGraph(cloneGraph)
-                            .setRule(rule)
-                            .setColumnNames(ruleMatches.getColumnNames())
-                            .setRow(cloneRow));
-                    cloneGraph.putAttribute("label", cloneGraph.toString());
-                    cloneGraph.draw("cloneGraph" + nextGraphNumber++);
-
-                    String newCertificate = cloneGraph.computeCertificate();
-                    JGraph oldGraph = certificateMap.get(newCertificate);
-                    if (oldGraph != null) {
-                        ltsGraph.createEdge(startGraph, rule.getName(), oldGraph);
-                    } else {
-                        todo.add(cloneGraph);
-                        certificateMap.put(newCertificate, cloneGraph);
-                        ltsGraph.getNodeList().add(cloneGraph);
-                        ltsGraph.createEdge(startGraph, rule.getName(), cloneGraph);
-                    }
-
-                    ltsGraph.getNodeList().add(cloneGraph);
-                    ltsGraph.createEdge(startGraph, rule.getName(), cloneGraph);
-
-                    todo.add(cloneGraph);
-                }
-            }
-        }
-
-        ltsGraph.draw("ltsGraph");
-        ltsGraph.draw("ltsGraphExplode", true);
+        return ruleList;
     }
 
     private void unloadApply(ApplyRuleParams params) {

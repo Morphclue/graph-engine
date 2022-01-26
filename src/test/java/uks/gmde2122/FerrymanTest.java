@@ -64,11 +64,6 @@ public class FerrymanTest {
                         ltsGraph.getNodeList().add(cloneGraph);
                         ltsGraph.createEdge(startGraph, rule.getName(), cloneGraph);
                     }
-
-                    ltsGraph.getNodeList().add(cloneGraph);
-                    ltsGraph.createEdge(startGraph, rule.getName(), cloneGraph);
-
-                    todo.add(cloneGraph);
                 }
             }
         }

@@ -77,8 +77,19 @@ public class FerrymanTest {
                             .setRule(rule)
                             .setColumnNames(ruleMatches.getColumnNames())
                             .setRow(cloneRow));
-                    cloneGraph.putAttribute("label", "cloneGraph" + nextGraphNumber);
+                    cloneGraph.putAttribute("label", cloneGraph.toString());
                     cloneGraph.draw("cloneGraph" + nextGraphNumber++);
+
+                    String newCertificate = cloneGraph.computeCertificate();
+                    JGraph oldGraph = certificateMap.get(newCertificate);
+                    if (oldGraph != null) {
+                        ltsGraph.createEdge(startGraph, rule.getName(), oldGraph);
+                    } else {
+                        todo.add(cloneGraph);
+                        certificateMap.put(newCertificate, cloneGraph);
+                        ltsGraph.getNodeList().add(cloneGraph);
+                        ltsGraph.createEdge(startGraph, rule.getName(), cloneGraph);
+                    }
 
                     ltsGraph.getNodeList().add(cloneGraph);
                     ltsGraph.createEdge(startGraph, rule.getName(), cloneGraph);

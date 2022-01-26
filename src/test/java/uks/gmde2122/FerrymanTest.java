@@ -24,6 +24,7 @@ public class FerrymanTest {
         lhs.createEdge(lhsFood, "at", lhsBank);
         eatRule.setFilterLambda(this::eatRuleLambdaNoBoat);
         ruleList.add(eatRule);
+        lhs.draw("eatRuleLhs");
 
         JRule loadCargoRule = new JRule().setName("loadCargoRule");
         lhs = loadCargoRule.createLhs();
@@ -32,9 +33,31 @@ public class FerrymanTest {
         JNode lhsCargo = lhs.createNode();
         lhs.createEdge(lhsBoat, "moored", lhsBank);
         lhs.createEdge(lhsCargo, "at", lhsBank);
+        loadCargoRule.setFilterLambda(this::loadCargoRuleLambdaBoatEmpty);
         loadCargoRule.setApplyLambda(this::loadCargoApply);
         ruleList.add(loadCargoRule);
+        lhs.draw("loadCargoLhs");
 
+        JRule moveBoatRule = new JRule().setName("moveBoatRule");
+        lhs = moveBoatRule.createLhs();
+        lhsBoat = lhs.createNode().putAttribute("label", "boat");
+        JNode lhsOldBank = lhs.createNode().putAttribute("label", "bank");
+        JNode lhsNewBank = lhs.createNode().putAttribute("label", "bank");
+        lhs.createEdge(lhsBoat, "moored", lhsOldBank);
+        lhs.createEdge(lhsOldBank, "os", lhsNewBank);
+        moveBoatRule.setApplyLambda(this::moveBoatApply);
+        ruleList.add(moveBoatRule);
+        lhs.draw("moveBoatLhs");
+
+        JRule unloadRule = new JRule().setName("unloadRule");
+        lhs = unloadRule.createLhs();
+        lhsBoat = lhs.createNode().putAttribute("label", "boat");
+        lhsBank = lhs.createNode().putAttribute("label", "bank");
+        lhsCargo = lhs.createNode();
+        lhs.createEdge(lhsBoat, "moored", lhsBank);
+        lhs.createEdge(lhsCargo, "moored", lhsBoat);
+        unloadRule.setApplyLambda(this::unloadApply);
+        ruleList.add(unloadRule);
         lhs.draw("loadCargoLhs");
 
         int nextGraphNumber = 1;
@@ -101,6 +124,40 @@ public class FerrymanTest {
 
         ltsGraph.draw("ltsGraph");
         ltsGraph.draw("ltsGraphExplode", true);
+    }
+
+    private void unloadApply(ApplyRuleParams params) {
+        JNode lhsBoat = params.getRule().getLhs().getNodeList().get(0);
+        JNode lhsBank = params.getRule().getLhs().getNodeList().get(1);
+        JNode lhsCargo = params.getRule().getLhs().getNodeList().get(2);
+
+        int boatIndex = params.getColumnNames().indexOf(lhsBoat.toString());
+        int bankIndex = params.getColumnNames().indexOf(lhsBank.toString());
+        int cargoIndex = params.getColumnNames().indexOf(lhsCargo.toString());
+
+        JNode hostBoat = (JNode) params.getRow().get(boatIndex);
+        JNode hostBank = (JNode) params.getRow().get(bankIndex);
+        JNode hostCargo = (JNode) params.getRow().get(cargoIndex);
+
+        params.getHostGraph().removeEdge(hostBoat, "in", hostBank);
+        params.getHostGraph().createEdge(hostBoat, "at", hostCargo);
+    }
+
+    private void moveBoatApply(ApplyRuleParams params) {
+        JNode lhsBoat = params.getRule().getLhs().getNodeList().get(0);
+        JNode lhsOldBank = params.getRule().getLhs().getNodeList().get(1);
+        JNode lhsNewBank = params.getRule().getLhs().getNodeList().get(2);
+
+        int boatIndex = params.getColumnNames().indexOf(lhsBoat.toString());
+        int oldBankIndex = params.getColumnNames().indexOf(lhsOldBank.toString());
+        int newBankIndex = params.getColumnNames().indexOf(lhsNewBank.toString());
+
+        JNode hostBoat = (JNode) params.getRow().get(boatIndex);
+        JNode hostOldBank = (JNode) params.getRow().get(oldBankIndex);
+        JNode hostNewBank = (JNode) params.getRow().get(newBankIndex);
+
+        params.getHostGraph().removeEdge(hostBoat, "moored", hostOldBank);
+        params.getHostGraph().createEdge(hostBoat, "moored", hostNewBank);
     }
 
     private String fmpGraphLabel(JGraph jGraph) {
@@ -215,6 +272,18 @@ public class FerrymanTest {
         matchTable.table = resultTable;
         if (change) {
             System.out.println(matchTable);
+        }
+    }
+
+    private void loadCargoRuleLambdaBoatEmpty(JRule jRule, MatchTable matchTable) {
+        ArrayList<Object> edgeList = matchTable.getGraph().getEdgeList();
+        for (int i = 0; i < edgeList.size(); i += 3) {
+            JNode target = (JNode) edgeList.get(i + 2);
+            String targetLabel = (String) target.getAttributeValues("label");
+
+            if (targetLabel.equals("boat")) {
+                matchTable.table.clear();
+            }
         }
     }
 }

@@ -12,8 +12,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.TreeSet;
+import java.util.function.Function;
 
 public class JGraph extends JNode {
+    public static Function<JGraph, String> labelFunction;
     private final ArrayList<JNode> nodeList = new ArrayList<>();
     private final ArrayList<Object> edgeList = new ArrayList<>();
     private StringBuilder objects;

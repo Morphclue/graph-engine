@@ -49,7 +49,7 @@ public class FerrymanTest {
 
         ArrayList<JGraph> todo = new ArrayList<>();
         todo.add(startGraph);
-        startGraph.putAttribute("label", "startGraph");
+        startGraph.putAttribute("label", fmpGraphLabel(startGraph));
 
         while (!todo.isEmpty()) {
             startGraph = todo.remove(0);
@@ -92,6 +92,45 @@ public class FerrymanTest {
         ltsGraph.draw("ltsGraphExplode", true);
     }
 
+    private String fmpGraphLabel(JGraph jGraph) {
+        String leftThings = "";
+        String rightThings = "";
+        String boatContent = "";
+        String boatSide = null;
+        for (int i = 0; i < jGraph.getEdgeList().size(); i += 3) {
+            JNode source = (JNode) jGraph.getEdgeList().get(i);
+            JNode target = (JNode) jGraph.getEdgeList().get(i + 2);
+            String sourceLabel = (String) source.getAttributeValues("label");
+            String targetLabel = (String) target.getAttributeValues("label");
+            String targetSide = (String) target.getAttributeValues("side");
+
+            if (targetLabel.equals("boat")) {
+                boatContent += sourceLabel.substring(0, 1);
+                continue;
+            }
+            if (sourceLabel.equals("bank") || targetSide == null) {
+                continue;
+            }
+            if (sourceLabel.equals("boat")) {
+                boatSide = targetSide;
+                continue;
+            }
+            if (targetSide.equals("left")) {
+                leftThings += sourceLabel.substring(0, 1).toUpperCase();
+            } else {
+                rightThings += sourceLabel.substring(0, 1).toUpperCase();
+            }
+        }
+
+        if (boatSide.equals("left")) {
+            leftThings += "b" + boatContent;
+        } else {
+            rightThings += "b" + boatContent;
+        }
+
+        return leftThings + "-" + rightThings;
+    }
+
     private void loadCargoApply(ApplyRuleParams params) {
         JNode lhsBoat = params.getRule().getLhs().getNodeList().get(0);
         JNode lhsBank = params.getRule().getLhs().getNodeList().get(1);
@@ -110,6 +149,7 @@ public class FerrymanTest {
     }
 
     private JGraph generateStartGraph() {
+        JGraph.labelFunction = this::fmpGraphLabel;
         JGraph startGraph = new JGraph();
 
         JNode wolf = startGraph.createNode().putAttribute("label", "wolf");

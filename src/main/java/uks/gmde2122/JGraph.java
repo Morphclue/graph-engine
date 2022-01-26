@@ -15,7 +15,7 @@ import java.util.TreeSet;
 import java.util.function.Function;
 
 public class JGraph extends JNode {
-    public static Function<JGraph, String> labelFunction;
+    public static Function<JGraph, String> labelFunction = null;
     private final ArrayList<JNode> nodeList = new ArrayList<>();
     private final ArrayList<Object> edgeList = new ArrayList<>();
     private StringBuilder objects;
@@ -239,5 +239,14 @@ public class JGraph extends JNode {
         }
         lines.sort(String::compareTo);
         return "- " + String.join("  \n", lines) + "\n";
+    }
+
+    @Override
+    //no fulib
+    public String toString() {
+        if (labelFunction == null) {
+            return super.toString();
+        }
+        return labelFunction.apply(this);
     }
 }

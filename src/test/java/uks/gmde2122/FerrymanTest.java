@@ -77,6 +77,34 @@ public class FerrymanTest {
         ltsGraph.draw("ltsGraphExplode", true);
     }
 
+    private JGraph generateStartGraph() {
+        JGraph.labelFunction = this::fmpGraphLabel;
+        JGraph startGraph = new JGraph();
+
+        JNode wolf = startGraph.createNode().putAttribute("label", "wolf");
+        JNode goat = startGraph.createNode().putAttribute("label", "goat");
+        JNode cabbage = startGraph.createNode().putAttribute("label", "cabbage");
+        JNode boat = startGraph.createNode().putAttribute("label", "boat");
+        JNode leftBank = startGraph.createNode()
+                .putAttribute("label", "bank")
+                .putAttribute("side", "left");
+        JNode rightBank = startGraph.createNode()
+                .putAttribute("label", "bank")
+                .putAttribute("side", "right");
+
+        startGraph.createEdge(wolf, "at", leftBank);
+        startGraph.createEdge(goat, "at", leftBank);
+        startGraph.createEdge(cabbage, "at", leftBank);
+        startGraph.createEdge(boat, "moored", leftBank);
+        startGraph.createEdge(wolf, "likes", goat);
+        startGraph.createEdge(goat, "likes", cabbage);
+        startGraph.createEdge(leftBank, "os", rightBank);
+        startGraph.createEdge(rightBank, "os", leftBank);
+
+        startGraph.draw("start");
+        return startGraph;
+    }
+
     private ArrayList<JRule> buildRules() {
         ArrayList<JRule> ruleList = new ArrayList<>();
 
@@ -130,40 +158,6 @@ public class FerrymanTest {
         return ruleList;
     }
 
-    private void unloadApply(ApplyRuleParams params) {
-        JNode lhsBoat = params.getRule().getLhs().getNodeList().get(0);
-        JNode lhsBank = params.getRule().getLhs().getNodeList().get(1);
-        JNode lhsCargo = params.getRule().getLhs().getNodeList().get(2);
-
-        int boatIndex = params.getColumnNames().indexOf(lhsBoat.toString());
-        int bankIndex = params.getColumnNames().indexOf(lhsBank.toString());
-        int cargoIndex = params.getColumnNames().indexOf(lhsCargo.toString());
-
-        JNode hostBoat = (JNode) params.getRow().get(boatIndex);
-        JNode hostBank = (JNode) params.getRow().get(bankIndex);
-        JNode hostCargo = (JNode) params.getRow().get(cargoIndex);
-
-        params.getHostGraph().removeEdge(hostBoat, "in", hostBank);
-        params.getHostGraph().createEdge(hostBoat, "at", hostCargo);
-    }
-
-    private void moveBoatApply(ApplyRuleParams params) {
-        JNode lhsBoat = params.getRule().getLhs().getNodeList().get(0);
-        JNode lhsOldBank = params.getRule().getLhs().getNodeList().get(1);
-        JNode lhsNewBank = params.getRule().getLhs().getNodeList().get(2);
-
-        int boatIndex = params.getColumnNames().indexOf(lhsBoat.toString());
-        int oldBankIndex = params.getColumnNames().indexOf(lhsOldBank.toString());
-        int newBankIndex = params.getColumnNames().indexOf(lhsNewBank.toString());
-
-        JNode hostBoat = (JNode) params.getRow().get(boatIndex);
-        JNode hostOldBank = (JNode) params.getRow().get(oldBankIndex);
-        JNode hostNewBank = (JNode) params.getRow().get(newBankIndex);
-
-        params.getHostGraph().removeEdge(hostBoat, "moored", hostOldBank);
-        params.getHostGraph().createEdge(hostBoat, "moored", hostNewBank);
-    }
-
     private String fmpGraphLabel(JGraph jGraph) {
         String leftThings = "";
         String rightThings = "";
@@ -203,6 +197,40 @@ public class FerrymanTest {
         return leftThings + "-" + rightThings;
     }
 
+    private void unloadApply(ApplyRuleParams params) {
+        JNode lhsBoat = params.getRule().getLhs().getNodeList().get(0);
+        JNode lhsBank = params.getRule().getLhs().getNodeList().get(1);
+        JNode lhsCargo = params.getRule().getLhs().getNodeList().get(2);
+
+        int boatIndex = params.getColumnNames().indexOf(lhsBoat.toString());
+        int bankIndex = params.getColumnNames().indexOf(lhsBank.toString());
+        int cargoIndex = params.getColumnNames().indexOf(lhsCargo.toString());
+
+        JNode hostBoat = (JNode) params.getRow().get(boatIndex);
+        JNode hostBank = (JNode) params.getRow().get(bankIndex);
+        JNode hostCargo = (JNode) params.getRow().get(cargoIndex);
+
+        params.getHostGraph().removeEdge(hostBoat, "in", hostBank);
+        params.getHostGraph().createEdge(hostBoat, "at", hostCargo);
+    }
+
+    private void moveBoatApply(ApplyRuleParams params) {
+        JNode lhsBoat = params.getRule().getLhs().getNodeList().get(0);
+        JNode lhsOldBank = params.getRule().getLhs().getNodeList().get(1);
+        JNode lhsNewBank = params.getRule().getLhs().getNodeList().get(2);
+
+        int boatIndex = params.getColumnNames().indexOf(lhsBoat.toString());
+        int oldBankIndex = params.getColumnNames().indexOf(lhsOldBank.toString());
+        int newBankIndex = params.getColumnNames().indexOf(lhsNewBank.toString());
+
+        JNode hostBoat = (JNode) params.getRow().get(boatIndex);
+        JNode hostOldBank = (JNode) params.getRow().get(oldBankIndex);
+        JNode hostNewBank = (JNode) params.getRow().get(newBankIndex);
+
+        params.getHostGraph().removeEdge(hostBoat, "moored", hostOldBank);
+        params.getHostGraph().createEdge(hostBoat, "moored", hostNewBank);
+    }
+
     private void loadCargoApply(ApplyRuleParams params) {
         JNode lhsBoat = params.getRule().getLhs().getNodeList().get(0);
         JNode lhsBank = params.getRule().getLhs().getNodeList().get(1);
@@ -220,33 +248,6 @@ public class FerrymanTest {
         params.getHostGraph().createEdge(hostCargo, "in", hostBoat);
     }
 
-    private JGraph generateStartGraph() {
-        JGraph.labelFunction = this::fmpGraphLabel;
-        JGraph startGraph = new JGraph();
-
-        JNode wolf = startGraph.createNode().putAttribute("label", "wolf");
-        JNode goat = startGraph.createNode().putAttribute("label", "goat");
-        JNode cabbage = startGraph.createNode().putAttribute("label", "cabbage");
-        JNode boat = startGraph.createNode().putAttribute("label", "boat");
-        JNode leftBank = startGraph.createNode()
-                .putAttribute("label", "bank")
-                .putAttribute("side", "left");
-        JNode rightBank = startGraph.createNode()
-                .putAttribute("label", "bank")
-                .putAttribute("side", "right");
-
-        startGraph.createEdge(wolf, "at", leftBank);
-        startGraph.createEdge(goat, "at", leftBank);
-        startGraph.createEdge(cabbage, "at", leftBank);
-        startGraph.createEdge(boat, "moored", leftBank);
-        startGraph.createEdge(wolf, "likes", goat);
-        startGraph.createEdge(goat, "likes", cabbage);
-        startGraph.createEdge(leftBank, "os", rightBank);
-        startGraph.createEdge(rightBank, "os", leftBank);
-
-        startGraph.draw("start");
-        return startGraph;
-    }
 
     private void eatRuleLambdaNoBoat(JRule rule, MatchTable matchTable) {
         JNode lhsBank = rule.getLhs().getNodeList().get(2);

@@ -10,7 +10,14 @@ public class FerrymanTest {
     @Test
     public void testFerrymanProblem() {
         JGraph startGraph = generateStartGraph();
+        ArrayList<JRule> rules = buildRules();
 
+        JGraph ltsGraph = explore(startGraph, rules);
+        ltsGraph.draw("ltsGraphExplode", true);
+        ltsGraph.draw("ltsGraph");
+    }
+
+    private JGraph explore(JGraph startGraph, ArrayList<JRule> rules) {
         int nextGraphNumber = 1;
 
         TreeMap<String, JGraph> certificateMap = new TreeMap<>();
@@ -28,7 +35,7 @@ public class FerrymanTest {
         while (!todo.isEmpty()) {
             startGraph = todo.remove(0);
 
-            for (JRule rule : buildRules()) {
+            for (JRule rule : rules) {
                 MatchTable ruleMatches = rule.findMatches(startGraph);
 
                 for (ArrayList<Object> row : ruleMatches.getTable()) {
@@ -48,9 +55,9 @@ public class FerrymanTest {
 
                     rule.apply(new ApplyRuleParams()
                             .setHostGraph(cloneGraph)
-                            .setRule(rule)
-                            .setColumnNames(ruleMatches.getColumnNames())
-                            .setRow(cloneRow));
+                            .setRule(rule).
+                            setColumnNames(ruleMatches.getColumnNames()).
+                            setRow(cloneRow));
                     cloneGraph.putAttribute("label", cloneGraph.toString());
                     cloneGraph.draw("cloneGraph" + nextGraphNumber++);
 
@@ -68,8 +75,7 @@ public class FerrymanTest {
             }
         }
 
-        ltsGraph.draw("ltsGraph");
-        ltsGraph.draw("ltsGraphExplode", true);
+        return ltsGraph;
     }
 
     private JGraph generateStartGraph() {

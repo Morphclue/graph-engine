@@ -1,11 +1,17 @@
 - c: 	org.fulib.classmodel.ClassModel
-  classes: 	applyRuleParams 	jRule 	jNode 	jGraph
+  classes: 	cTLExists 	applyRuleParams 	jRule 	jNode 	jGraph
   defaultCollectionType: 	c1
   defaultPropertyStyle: 	Bean
   defaultRoleType: 	"java.util.ArrayList<%s>"
   mainJavaDir: 	"src/main/java"
   packageName: 	uks.gmde2122
   packageSrcFolder: 	"src/main/java/uks/gmde2122"
+
+- cTLExists: 	org.fulib.classmodel.Clazz
+  model: 	c
+  modified: 	false
+  name: 	CTLExists
+  propertyStyle: 	Bean
 
 - applyRuleParams: 	org.fulib.classmodel.Clazz
   model: 	c

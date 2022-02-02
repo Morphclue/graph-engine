@@ -22,6 +22,10 @@ public class GenModel implements ClassModelDecorator {
 
     }
 
+    class CTLExists {
+
+    }
+
     @Override
     public void decorate(ClassModelManager mm) {
         mm.haveNestedClasses(GenModel.class);

@@ -7,13 +7,43 @@ import java.util.TreeMap;
 
 public class FerrymanTest {
 
+    private final String LABEL = "label";
+    private final String BANK = "bank";
+    private final String SIDE = "side";
+    private final String WOLF = "wolf";
+    private final String GOAT = "goat";
+    private final String CABBAGE = "cabbage";
+    private final String BOAT = "boat";
+    private final String LEFT = "left";
+    private final String RIGHT = "right";
+    private final String MOORED = "moored";
+    private final String LIKES = "likes";
+    private final String IN = "in";
+    private final String AT = "at";
+    private final String OS = "os";
+    private JGraph ltsGraph;
+
     @Test
     public void testFerrymanProblem() {
         JGraph startGraph = generateStartGraph();
         ArrayList<JRule> rules = buildRules();
 
-        JGraph ltsGraph = explore(startGraph, rules);
+        ltsGraph = explore(startGraph, rules);
         ltsGraph.draw("ltsGraphExplode", true);
+
+        CTLExists eOp = new CTLExists()
+                .setLTSGraph(ltsGraph)
+                .setSafeCondition(this::noEat)
+                .setGoalCondition(this::fmpSolved);
+
+        boolean solvable = eOp.test(startGraph);
+
+        if (solvable) {
+            for (JGraph jGraph : eOp.getSolution()) {
+                System.out.printf("visit graph %s %s%n", "" + jGraph.getId(), jGraph);
+            }
+        }
+
         ltsGraph.draw("ltsGraph");
     }
 
@@ -30,7 +60,7 @@ public class FerrymanTest {
 
         ArrayList<JGraph> todo = new ArrayList<>();
         todo.add(startGraph);
-        startGraph.putAttribute("label", fmpGraphLabel(startGraph));
+        startGraph.putAttribute(LABEL, fmpGraphLabel(startGraph));
 
         while (!todo.isEmpty()) {
             startGraph = todo.remove(0);
@@ -58,7 +88,7 @@ public class FerrymanTest {
                             .setRule(rule).
                             setColumnNames(ruleMatches.getColumnNames()).
                             setRow(cloneRow));
-                    cloneGraph.putAttribute("label", cloneGraph.toString());
+                    cloneGraph.putAttribute(LABEL, cloneGraph.toString());
                     cloneGraph.draw("cloneGraph" + nextGraphNumber++);
 
                     String newCertificate = cloneGraph.computeCertificate();
@@ -82,25 +112,25 @@ public class FerrymanTest {
         JGraph.labelFunction = this::fmpGraphLabel;
         JGraph startGraph = new JGraph();
 
-        JNode wolf = startGraph.createNode().putAttribute("label", "wolf");
-        JNode goat = startGraph.createNode().putAttribute("label", "goat");
-        JNode cabbage = startGraph.createNode().putAttribute("label", "cabbage");
-        JNode boat = startGraph.createNode().putAttribute("label", "boat");
+        JNode wolf = startGraph.createNode().putAttribute(LABEL, WOLF);
+        JNode goat = startGraph.createNode().putAttribute(LABEL, GOAT);
+        JNode cabbage = startGraph.createNode().putAttribute(LABEL, CABBAGE);
+        JNode boat = startGraph.createNode().putAttribute(LABEL, BOAT);
         JNode leftBank = startGraph.createNode()
-                .putAttribute("label", "bank")
-                .putAttribute("side", "left");
+                .putAttribute(LABEL, BANK)
+                .putAttribute(SIDE, LEFT);
         JNode rightBank = startGraph.createNode()
-                .putAttribute("label", "bank")
-                .putAttribute("side", "right");
+                .putAttribute(LABEL, BANK)
+                .putAttribute(SIDE, RIGHT);
 
-        startGraph.createEdge(wolf, "at", leftBank);
-        startGraph.createEdge(goat, "at", leftBank);
-        startGraph.createEdge(cabbage, "at", leftBank);
-        startGraph.createEdge(boat, "moored", leftBank);
-        startGraph.createEdge(wolf, "likes", goat);
-        startGraph.createEdge(goat, "likes", cabbage);
-        startGraph.createEdge(leftBank, "os", rightBank);
-        startGraph.createEdge(rightBank, "os", leftBank);
+        startGraph.createEdge(wolf, AT, leftBank);
+        startGraph.createEdge(goat, AT, leftBank);
+        startGraph.createEdge(cabbage, AT, leftBank);
+        startGraph.createEdge(boat, MOORED, leftBank);
+        startGraph.createEdge(wolf, LIKES, goat);
+        startGraph.createEdge(goat, LIKES, cabbage);
+        startGraph.createEdge(leftBank, OS, rightBank);
+        startGraph.createEdge(rightBank, OS, leftBank);
 
         startGraph.draw("start");
         return startGraph;
@@ -114,21 +144,21 @@ public class FerrymanTest {
         lhs = eatRule.createLhs();
         JNode lhsEater = lhs.createNode();
         JNode lhsFood = lhs.createNode();
-        JNode lhsBank = lhs.createNode().putAttribute("label", "bank");
-        lhs.createEdge(lhsEater, "likes", lhsFood);
-        lhs.createEdge(lhsEater, "at", lhsBank);
-        lhs.createEdge(lhsFood, "at", lhsBank);
+        JNode lhsBank = lhs.createNode().putAttribute(LABEL, BANK);
+        lhs.createEdge(lhsEater, LIKES, lhsFood);
+        lhs.createEdge(lhsEater, AT, lhsBank);
+        lhs.createEdge(lhsFood, AT, lhsBank);
         eatRule.setFilterLambda(this::eatRuleLambdaNoBoat);
         ruleList.add(eatRule);
         lhs.draw("eatRuleLhs");
 
         JRule loadCargoRule = new JRule().setName("loadCargoRule");
         lhs = loadCargoRule.createLhs();
-        JNode lhsBoat = lhs.createNode().putAttribute("label", "boat");
-        lhsBank = lhs.createNode().putAttribute("label", "bank");
+        JNode lhsBoat = lhs.createNode().putAttribute(LABEL, BOAT);
+        lhsBank = lhs.createNode().putAttribute(LABEL, BANK);
         JNode lhsCargo = lhs.createNode();
-        lhs.createEdge(lhsBoat, "moored", lhsBank);
-        lhs.createEdge(lhsCargo, "at", lhsBank);
+        lhs.createEdge(lhsBoat, MOORED, lhsBank);
+        lhs.createEdge(lhsCargo, AT, lhsBank);
         loadCargoRule.setFilterLambda(this::loadCargoRuleLambdaBoatEmpty);
         loadCargoRule.setApplyLambda(this::loadCargoApply);
         ruleList.add(loadCargoRule);
@@ -136,25 +166,39 @@ public class FerrymanTest {
 
         JRule moveBoatRule = new JRule().setName("moveBoatRule");
         lhs = moveBoatRule.createLhs();
-        lhsBoat = lhs.createNode().putAttribute("label", "boat");
-        JNode lhsOldBank = lhs.createNode().putAttribute("label", "bank");
-        JNode lhsNewBank = lhs.createNode().putAttribute("label", "bank");
-        lhs.createEdge(lhsBoat, "moored", lhsOldBank);
-        lhs.createEdge(lhsOldBank, "os", lhsNewBank);
+        lhsBoat = lhs.createNode().putAttribute(LABEL, BOAT);
+        JNode lhsOldBank = lhs.createNode().putAttribute(LABEL, BANK);
+        JNode lhsNewBank = lhs.createNode().putAttribute(LABEL, BANK);
+        lhs.createEdge(lhsBoat, MOORED, lhsOldBank);
+        lhs.createEdge(lhsOldBank, OS, lhsNewBank);
         moveBoatRule.setApplyLambda(this::moveBoatApply);
         ruleList.add(moveBoatRule);
         lhs.draw("moveBoatLhs");
 
         JRule unloadRule = new JRule().setName("unloadRule");
         lhs = unloadRule.createLhs();
-        lhsBoat = lhs.createNode().putAttribute("label", "boat");
-        lhsBank = lhs.createNode().putAttribute("label", "bank");
+        lhsBoat = lhs.createNode().putAttribute(LABEL, BOAT);
+        lhsBank = lhs.createNode().putAttribute(LABEL, BANK);
         lhsCargo = lhs.createNode();
-        lhs.createEdge(lhsBoat, "moored", lhsBank);
-        lhs.createEdge(lhsCargo, "moored", lhsBoat);
+        lhs.createEdge(lhsBoat, MOORED, lhsBank);
+        lhs.createEdge(lhsCargo, IN, lhsBoat);
         unloadRule.setApplyLambda(this::unloadApply);
         ruleList.add(unloadRule);
         lhs.draw("loadCargoLhs");
+
+        JRule solvedRule = new JRule().setName("solvedRule");
+        lhs = solvedRule.createLhs();
+        JNode lhsWolf = lhs.createNode().putAttribute(LABEL, WOLF);
+        JNode lhsGoat = lhs.createNode().putAttribute(LABEL, GOAT);
+        JNode lhsCabbage = lhs.createNode().putAttribute(LABEL, CABBAGE);
+        lhsBoat = lhs.createNode().putAttribute(LABEL, BOAT);
+        lhsBank = lhs.createNode().putAttribute(SIDE, RIGHT);
+        lhs.createEdge(lhsWolf, AT, lhsBank);
+        lhs.createEdge(lhsGoat, AT, lhsBank);
+        lhs.createEdge(lhsCabbage, AT, lhsBank);
+        lhs.createEdge(lhsBoat, MOORED, lhsBank);
+        ruleList.add(solvedRule);
+        lhs.draw("solvedRuleLhs");
 
         return ruleList;
     }
@@ -167,29 +211,29 @@ public class FerrymanTest {
         for (int i = 0; i < jGraph.getEdgeList().size(); i += 3) {
             JNode source = (JNode) jGraph.getEdgeList().get(i);
             JNode target = (JNode) jGraph.getEdgeList().get(i + 2);
-            String sourceLabel = (String) source.getAttributeValues("label");
-            String targetLabel = (String) target.getAttributeValues("label");
-            String targetSide = (String) target.getAttributeValues("side");
+            String sourceLabel = (String) source.getAttributeValues(LABEL);
+            String targetLabel = (String) target.getAttributeValues(LABEL);
+            String targetSide = (String) target.getAttributeValues(SIDE);
 
-            if (targetLabel.equals("boat")) {
+            if (targetLabel.equals(BOAT)) {
                 boatContent += sourceLabel.substring(0, 1);
                 continue;
             }
-            if (sourceLabel.equals("bank") || targetSide == null) {
+            if (sourceLabel.equals(BANK) || targetSide == null) {
                 continue;
             }
-            if (sourceLabel.equals("boat")) {
+            if (sourceLabel.equals(BOAT)) {
                 boatSide = targetSide;
                 continue;
             }
-            if (targetSide.equals("left")) {
+            if (targetSide.equals(LEFT)) {
                 leftThings += sourceLabel.substring(0, 1).toUpperCase();
             } else {
                 rightThings += sourceLabel.substring(0, 1).toUpperCase();
             }
         }
 
-        if (boatSide.equals("left")) {
+        if (boatSide.equals(LEFT)) {
             leftThings += "b" + boatContent;
         } else {
             rightThings += "b" + boatContent;
@@ -211,8 +255,8 @@ public class FerrymanTest {
         JNode hostBank = (JNode) params.getRow().get(bankIndex);
         JNode hostCargo = (JNode) params.getRow().get(cargoIndex);
 
-        params.getHostGraph().removeEdge(hostBoat, "in", hostBank);
-        params.getHostGraph().createEdge(hostBoat, "at", hostCargo);
+        params.getHostGraph().removeEdge(hostCargo, IN, hostBoat);
+        params.getHostGraph().createEdge(hostCargo, AT, hostBank);
     }
 
     private void moveBoatApply(ApplyRuleParams params) {
@@ -228,8 +272,8 @@ public class FerrymanTest {
         JNode hostOldBank = (JNode) params.getRow().get(oldBankIndex);
         JNode hostNewBank = (JNode) params.getRow().get(newBankIndex);
 
-        params.getHostGraph().removeEdge(hostBoat, "moored", hostOldBank);
-        params.getHostGraph().createEdge(hostBoat, "moored", hostNewBank);
+        params.getHostGraph().removeEdge(hostBoat, MOORED, hostOldBank);
+        params.getHostGraph().createEdge(hostBoat, MOORED, hostNewBank);
     }
 
     private void loadCargoApply(ApplyRuleParams params) {
@@ -245,8 +289,8 @@ public class FerrymanTest {
         JNode hostBank = (JNode) params.getRow().get(bankIndex);
         JNode hostCargo = (JNode) params.getRow().get(cargoIndex);
 
-        params.getHostGraph().removeEdge(hostCargo, "at", hostBank);
-        params.getHostGraph().createEdge(hostCargo, "in", hostBoat);
+        params.getHostGraph().removeEdge(hostCargo, AT, hostBank);
+        params.getHostGraph().createEdge(hostCargo, IN, hostBoat);
     }
 
 
@@ -267,7 +311,7 @@ public class FerrymanTest {
                 String label = (String) edgeList.get(i + 1);
                 JNode target = (JNode) edgeList.get(i + 2);
 
-                if (label.equals("moored") && bank == target) {
+                if (label.equals(MOORED) && bank == target) {
                     continue rowLoop;
                 }
             }
@@ -285,11 +329,33 @@ public class FerrymanTest {
         ArrayList<Object> edgeList = matchTable.getGraph().getEdgeList();
         for (int i = 0; i < edgeList.size(); i += 3) {
             JNode target = (JNode) edgeList.get(i + 2);
-            String targetLabel = (String) target.getAttributeValues("label");
+            String targetLabel = (String) target.getAttributeValues(LABEL);
 
-            if (targetLabel.equals("boat")) {
+            if (targetLabel.equals(BOAT)) {
                 matchTable.table.clear();
             }
         }
+    }
+
+    private boolean noEat(JGraph jGraph) {
+        ArrayList<Object> edgeList = ltsGraph.getEdgeList();
+
+        for (int i = 0; i < edgeList.size(); i += 3) {
+            if (edgeList.get(i) == jGraph && "eatRule".equals(edgeList.get(i + 1))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean fmpSolved(JGraph jGraph) {
+        ArrayList<Object> edgeList = ltsGraph.getEdgeList();
+
+        for (int i = 0; i < edgeList.size(); i += 3) {
+            if (edgeList.get(i) == jGraph && "solvedRule".equals(edgeList.get(i + 1))) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -98,7 +98,7 @@ public class FerrymanTest {
 
                     if (oldGraphs != null) {
                         for (JGraph oldGraph : oldGraphs) {
-                            if(oldGraph.isIsomorphic(cloneGraph)){
+                            if (oldGraph.isIsomorphic(cloneGraph)) {
                                 ltsGraph.createEdge(startGraph, rule.getName(), oldGraph);
                             } else {
                                 todo.add(cloneGraph);
@@ -164,6 +164,7 @@ public class FerrymanTest {
         lhs.createEdge(lhsEater, AT, lhsBank);
         lhs.createEdge(lhsFood, AT, lhsBank);
         eatRule.setFilterLambda(this::eatRuleLambdaNoBoat);
+        eatRule.setApplyLambda(this::eatApply);
         ruleList.add(eatRule);
         lhs.draw("eatRuleLhs");
 
@@ -308,6 +309,13 @@ public class FerrymanTest {
         params.getHostGraph().createEdge(hostCargo, IN, hostBoat);
     }
 
+    private void eatApply(ApplyRuleParams params) {
+        JNode lhsFood = params.getRule().getLhs().getNodeList().get(1);
+        int foodIndex = params.getColumnNames().indexOf(lhsFood.toString());
+        JNode hostFood = (JNode) params.getRow().get(foodIndex);
+
+        params.getHostGraph().removeNode(hostFood);
+    }
 
     private void eatRuleLambdaNoBoat(JRule rule, MatchTable matchTable) {
         JNode lhsBank = rule.getLhs().getNodeList().get(2);

@@ -39,6 +39,19 @@ public class JGraph extends JNode {
         return this;
     }
 
+    public void removeNode(JNode node) {
+        nodeList.remove(node);
+        for (int i = edgeList.size() - 3; i >= 0; i -= 3) {
+            JNode source = (JNode) edgeList.get(i);
+            JNode target = (JNode) edgeList.get(i + 2);
+            if (source.equals(node) || target.equals(node)) {
+                for (int j = 0; j < 3; j++) {
+                    edgeList.remove(i);
+                }
+            }
+        }
+    }
+
     public JGraph removeEdge(JNode source, String label, JNode target) {
         for (int i = 0; i < edgeList.size(); i += 3) {
             if (edgeList.get(i).equals(source) &&

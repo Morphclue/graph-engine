@@ -109,7 +109,13 @@ public class JGraph extends JNode {
                         "" + node.getAttributesList().get(a),
                         "" + node.getAttributesList().get(a + 1)));
             }
-            ST objectST = stGroup.getInstanceOf("object");
+            ST objectST;
+            if (node instanceof JGraph) {
+                objectST = stGroup.getInstanceOf("graph-object");
+            } else {
+                objectST = stGroup.getInstanceOf("object");
+            }
+
             objectST.add("objectId", "" + node.getId());
             objectST.add("label", label);
             objectST.add("attributeList", attributeList);

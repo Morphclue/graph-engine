@@ -12,7 +12,20 @@ object(objectId, label, attributeList) ::= <<
     shape=plaintext
     fontsize="10"
     label=<
-      <table border='0' cellborder='1' cellspacing='0'>
+      <table border='0' cellborder='1' cellspacing='0' bgcolor='#99FF99'>
+        <tr><td><u>$objectId$ :$label$</u></td></tr>
+        <tr><td>$attributeList:{attribute|$attribute; format="xml-encode"$<br align='left'/>}; separator=""$</td></tr>
+      </table>
+    >
+];
+>>
+
+graph-object(objectId, label, attributeList) ::= <<
+"$objectId$" [
+    shape=plaintext
+    fontsize="10"
+    label=<
+      <table border='0' cellborder='1' cellspacing='0' bgcolor='#FF99FF'>
         <tr><td><u>$objectId$ :$label$</u></td></tr>
         <tr><td>$attributeList:{attribute|$attribute; format="xml-encode"$<br align='left'/>}; separator=""$</td></tr>
       </table>

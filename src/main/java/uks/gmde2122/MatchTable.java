@@ -28,6 +28,8 @@ public class MatchTable {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(ruleName).append("\n");
         stringBuilder.append("|\t").append(String.join("\t|\t", columnNames)).append("\t|\n");
+        stringBuilder.append("|---".repeat(columnNames.size()));
+        stringBuilder.append("|\n");
 
         for (ArrayList<Object> row : table) {
             stringBuilder.append("| ");

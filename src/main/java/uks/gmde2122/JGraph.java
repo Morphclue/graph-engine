@@ -249,4 +249,10 @@ public class JGraph extends JNode {
         }
         return labelFunction.apply(this);
     }
+
+    public boolean isIsomorphic(JGraph other) {
+        JRule isomorphicRule = new JRule().setName("isomorphicRule").setLhs(other);
+
+        return !isomorphicRule.findMatches(this).getTable().isEmpty();
+    }
 }

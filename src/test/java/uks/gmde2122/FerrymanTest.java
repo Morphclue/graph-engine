@@ -50,10 +50,12 @@ public class FerrymanTest {
     private JGraph explore(JGraph startGraph, ArrayList<JRule> rules) {
         int nextGraphNumber = 1;
 
-        TreeMap<String, JGraph> certificateMap = new TreeMap<>();
+        TreeMap<String, ArrayList<JGraph>> certificateMap = new TreeMap<>();
         String startCertificate = startGraph.computeCertificate();
         System.out.println("Start-Certificate = \n" + startCertificate);
-        certificateMap.put(startCertificate, startGraph);
+        ArrayList<JGraph> graphList = new ArrayList<>();
+        graphList.add(startGraph);
+        certificateMap.put(startCertificate, graphList);
 
         JGraph ltsGraph = new JGraph();
         ltsGraph.getNodeList().add(startGraph);
@@ -92,12 +94,25 @@ public class FerrymanTest {
                     cloneGraph.draw("cloneGraph" + nextGraphNumber++);
 
                     String newCertificate = cloneGraph.computeCertificate();
-                    JGraph oldGraph = certificateMap.get(newCertificate);
-                    if (oldGraph != null) {
-                        ltsGraph.createEdge(startGraph, rule.getName(), oldGraph);
+                    ArrayList<JGraph> oldGraphs = certificateMap.get(newCertificate);
+
+                    if (oldGraphs != null) {
+                        for (JGraph oldGraph : oldGraphs) {
+                            if(oldGraph.isIsomorphic(cloneGraph)){
+                                ltsGraph.createEdge(startGraph, rule.getName(), oldGraph);
+                            } else {
+                                todo.add(cloneGraph);
+                                oldGraphs.add(cloneGraph);
+                                ltsGraph.getNodeList().add(cloneGraph);
+                                ltsGraph.createEdge(startGraph, rule.getName(), cloneGraph);
+                            }
+                        }
+
                     } else {
                         todo.add(cloneGraph);
-                        certificateMap.put(newCertificate, cloneGraph);
+                        ArrayList<JGraph> cloneGraphList = new ArrayList<>();
+                        cloneGraphList.add(cloneGraph);
+                        certificateMap.put(newCertificate, cloneGraphList);
                         ltsGraph.getNodeList().add(cloneGraph);
                         ltsGraph.createEdge(startGraph, rule.getName(), cloneGraph);
                     }

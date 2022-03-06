@@ -135,6 +135,11 @@ public class JRule {
         return this;
     }
 
+    public JRule setLhs(JGraph lhs) {
+        this.lhs = lhs;
+        return this;
+    }
+
     public JGraph getLhs() {
         return lhs;
     }

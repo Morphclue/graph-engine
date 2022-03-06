@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.TreeSet;
 import java.util.function.Function;
@@ -235,7 +236,10 @@ public class JGraph extends JNode {
             }
         }
 
-        return String.join("", certificateList);
+        ArrayList<String> finalCertificates = new ArrayList<>(nodeToCertificate.values());
+        Collections.sort(finalCertificates);
+
+        return String.join("", finalCertificates);
     }
 
     private String certificateZero(JNode node) {

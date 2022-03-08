@@ -7,9 +7,8 @@ public class CTLAlways implements Predicate<JGraph> {
     private JGraph ltsGraph;
     private Predicate<JGraph> safeCondition;
     private Predicate<JGraph> goalCondition;
-    private ArrayList<JGraph> solution;
+    private ArrayList<JGraph> counterExamples;
     private ArrayList<JGraph> visited;
-
 
     @Override
     public boolean test(JGraph jGraph) {
@@ -17,13 +16,42 @@ public class CTLAlways implements Predicate<JGraph> {
         visited = new ArrayList<>();
         path.add(jGraph);
 
-        solution = findPath(path);
-        return solution == null;
+        counterExamples = findPath(path);
+        return counterExamples == null;
     }
 
     private ArrayList<JGraph> findPath(ArrayList<JGraph> path) {
-        // TODO: path-finding
-        return path;
+        JGraph lastGraph = path.get(path.size() - 1);
+
+        if (visited.contains(lastGraph)) {
+            return null;
+        }
+
+        visited.add(lastGraph);
+
+        if (goalCondition.test(lastGraph)) {
+            return null;
+        }
+
+        if(safeCondition.test(lastGraph)){
+            ArrayList<Object> edgeList = this.ltsGraph.getEdgeList();
+            for (int i = 0; i < edgeList.size(); i+=3) {
+                JGraph source = (JGraph) edgeList.get(i);
+                JGraph target = (JGraph) edgeList.get(i + 2);
+                if (source == lastGraph) {
+                    ArrayList<JGraph> clone = (ArrayList<JGraph>) path.clone();
+                    clone.add(target);
+                    ArrayList<JGraph> solution = findPath(clone);
+                    if (solution != null) {
+                        return solution;
+                    }
+                }
+            }
+        } else {
+            return path;
+        }
+
+        return null;
     }
 
     public CTLAlways setLTSGraph(JGraph ltsGraph) {
@@ -41,7 +69,7 @@ public class CTLAlways implements Predicate<JGraph> {
         return this;
     }
 
-    public ArrayList<JGraph> getSolution() {
-        return this.solution;
+    public ArrayList<JGraph> getCounterExamples() {
+        return this.counterExamples;
     }
 }

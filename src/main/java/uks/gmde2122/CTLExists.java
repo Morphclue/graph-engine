@@ -29,11 +29,11 @@ public class CTLExists implements Predicate<JGraph> {
 
         visited.add(lastGraph);
 
-        if (this.goalCondition.test(lastGraph)) {
+        if (goalCondition.test(lastGraph)) {
             return path;
         }
 
-        if (this.safeCondition.test(lastGraph)) {
+        if (safeCondition.test(lastGraph)) {
             ArrayList<Object> edgeList = this.ltsGraph.getEdgeList();
             for (int i = 0; i < edgeList.size(); i += 3) {
                 JGraph source = (JGraph) edgeList.get(i);
@@ -46,7 +46,6 @@ public class CTLExists implements Predicate<JGraph> {
                         return solution;
                     }
                 }
-
             }
         }
         return null;

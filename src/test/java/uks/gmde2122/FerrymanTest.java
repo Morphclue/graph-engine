@@ -31,14 +31,27 @@ public class FerrymanTest {
         ltsGraph = explore(startGraph, rules);
         ltsGraph.draw("ltsGraphExplode", true);
 
+        CTLAlways aOp = new CTLAlways();
+        aOp.setLTSGraph(ltsGraph);
+        aOp.setSafeCondition(this::noEat);
+        aOp.setGoalCondition(this::fmpSolved);
+
+        boolean alwaysSolvable = aOp.test(startGraph);
+        System.out.println("Always Operator:");
+        if (!alwaysSolvable) {
+            for (JGraph jGraph : aOp.getCounterExamples()) {
+                System.out.printf("visit graph %s %s%n", "" + jGraph.getId(), jGraph);
+            }
+        }
+
         CTLExists eOp = new CTLExists()
                 .setLTSGraph(ltsGraph)
                 .setSafeCondition(this::noEat)
                 .setGoalCondition(this::fmpSolved);
 
-        boolean solvable = eOp.test(startGraph);
-
-        if (solvable) {
+        boolean existsSolvable = eOp.test(startGraph);
+        System.out.println("\nExists Operator: ");
+        if (existsSolvable) {
             for (JGraph jGraph : eOp.getSolution()) {
                 System.out.printf("visit graph %s %s%n", "" + jGraph.getId(), jGraph);
             }

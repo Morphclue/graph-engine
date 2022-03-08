@@ -17,7 +17,6 @@ public class CTLExists implements Predicate<JGraph> {
         path.add(jGraph);
 
         solution = findPath(path);
-
         return solution != null;
     }
 
